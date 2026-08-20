@@ -1,0 +1,51 @@
+# ===================== 依赖 =====================
+# 递归忽略所有子项目的依赖目录（如 todolist/node_modules）
+node_modules/
+.pnp/
+.pnp.js
+
+# ===================== 构建产物 =====================
+# 递归忽略所有子项目的构建输出
+dist/
+dist-ssr/
+out/
+*.local
+
+# ===================== 缓存 / 日志 =====================
+.vite/
+.cache/
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.tsbuildinfo
+
+# ===================== 环境变量 =====================
+.env
+.env.*
+!.env.example
+
+# ===================== 编辑器 / IDE =====================
+.vscode/
+*.swp
+*.swo
+
+# ===================== AI 编程工具 =====================
+# 各 AI 编程工具 / IDE 的本地工作目录（不进版本库）
+.trae/
+.workbuddy/
+.codebuddy/
+.cursor/
+.windsurf/
+.claude/
+.claude-code/
+.codeium/
+.continue/
+.aider/
+.roo/
+.qador/
+# ===================== 操作系统 =====================
+.DS_Store
+Thumbs.db
