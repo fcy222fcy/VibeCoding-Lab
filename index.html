@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>vibecoding · 前端作品集</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: linear-gradient(160deg, #f6f8fb 0%, #eef2f7 100%);
+      min-height: 100vh;
+      color: #1f2937;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 64px 24px 48px;
+    }
+    header { text-align: center; margin-bottom: 48px; }
+    header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    header p {
+      margin-top: 12px;
+      color: #6b7280;
+      font-size: 15px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      width: 100%;
+      max-width: 960px;
+    }
+    .card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 28px;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+      border-color: #93c5fd;
+    }
+    .card .tag {
+      align-self: flex-start;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 16px;
+    }
+    .tag-vue   { background: #e0f2e9; color: #0f766e; }
+    .tag-react { background: #e0f2fe; color: #0369a1; }
+    .tag-admin { background: #ede9fe; color: #6d28d9; }
+    .card h2 { font-size: 20px; margin-bottom: 10px; }
+    .card p  { font-size: 14px; color: #6b7280; line-height: 1.7; flex: 1; }
+    .card .arrow {
+      margin-top: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #2563eb;
+    }
+    footer {
+      margin-top: 56px;
+      font-size: 13px;
+      color: #9ca3af;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>vibecoding · 前端作品集</h1>
+    <p>Vite + Vue3 / React 构建的前端小项目合集</p>
+  </header>
+
+  <main class="grid">
+    <a class="card" href="/vibecoding/todolist/">
+      <span class="tag tag-vue">Vue 3 · Vite</span>
+      <h2>TodoList</h2>
+      <p>一个漫画风格的待办清单应用，支持添加、筛选、排序与本地持久化，组件拆分清晰。</p>
+      <span class="arrow">打开 Demo →</span>
+    </a>
+
+    <a class="card" href="/vibecoding/todolist-react/">
+      <span class="tag tag-react">React 18 · Vite</span>
+      <h2>TodoList React</h2>
+      <p>使用 React 18 重写的待办清单版本，体验 Vue 与 React 两种实现方式的差异。</p>
+      <span class="arrow">打开 Demo →</span>
+    </a>
+
+    <a class="card" href="/vibecoding/shiyou-admin/">
+      <span class="tag tag-admin">Vue 3 · Vue Router</span>
+      <h2>食友后台管理系统</h2>
+      <p>校园美食发现与评价平台的后台管理原型，包含 20+ 页面：RBAC 权限、数据看板、多模块 CRUD 与操作日志。</p>
+      <span class="arrow">打开 Demo →</span>
+    </a>
+  </main>
+
+  <footer>GitHub Pages 静态部署 · vibecoding</footer>
+</body>
+</html>

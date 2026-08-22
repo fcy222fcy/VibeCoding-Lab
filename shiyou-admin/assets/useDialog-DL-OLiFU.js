@@ -1,0 +1,1 @@
+import{l as r}from"./index--ZC9sW_M.js";function u(){const o=r({open:!1,title:"",body:"",confirmText:"确认",onConfirm:null});function n({title:e,body:t="",confirmText:i="确认",onConfirm:l=null}){o.title=e,o.body=t,o.confirmText=i,o.onConfirm=l,o.open=!0}return{dlg:o,openDialog:n}}export{u};
