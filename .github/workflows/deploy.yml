@@ -1,0 +1,57 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: pages
+      cancel-in-progress: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build todolist
+        run: |
+          cd todolist
+          npm ci
+          npm run build:gh
+
+      - name: Build todolist-react
+        run: |
+          cd todolist-react
+          npm ci
+          npm run build:gh
+
+      - name: Build shiyou-admin
+        run: |
+          cd management-system/shiyou-admin
+          npm ci
+          npm run build:gh
+
+      - name: Assemble site
+        run: |
+          mkdir -p site
+          cp index.html site/
+          cp -r todolist/dist site/todolist
+          cp -r todolist-react/dist site/todolist-react
+          cp -r management-system/shiyou-admin/dist site/shiyou-admin
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site
+          publish_branch: gh-pages

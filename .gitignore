@@ -46,6 +46,11 @@ pnpm-debug.log*
 .aider/
 .roo/
 .qador/
+
+# ===================== IDE 配置 / 构建临时文件 =====================
+.idea/
+vite.config.js.timestamp-*
+
 # ===================== 操作系统 =====================
 .DS_Store
 Thumbs.db
