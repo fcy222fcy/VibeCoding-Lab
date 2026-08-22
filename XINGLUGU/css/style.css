@@ -1,0 +1,728 @@
+/* ═══════════════════════════════════════════════════════════════
+   XINGLUGU · 像素农场物语
+   视觉语言致敬《星露谷物语》：
+   - 16-bit 复古像素、温暖大地色系、无抖色干净色块
+   - 1px 深色描边、像素字体（Press Start 2P + Zpix）
+   - chunky 复古按钮、RPG 对话框、点阵纹理
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ---------- 字体（本地打包，离线可用） ---------- */
+@font-face {
+  font-family: 'Press Start 2P';
+  src: url('../assets/fonts/PressStart2P-Regular.ttf') format('truetype');
+  font-display: swap;
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'Zpix';
+  src: url('../assets/fonts/Zpix.ttf') format('truetype');
+  font-display: swap;
+}
+
+/* ---------- 主题变量（星露谷大地色系） ---------- */
+:root {
+  /* 基础色 */
+  --c-cream:      #f8ecc8;   /* 羊皮纸奶油色（替代纯白） */
+  --c-paper:      #f2dfae;
+  --c-outline:    #3b2a1e;   /* 深棕描边 */
+  --c-wood:       #8a5a32;   /* 木纹棕 */
+  --c-wood-dark:  #5f3d20;
+  --c-wood-light: #e8c078;
+
+  /* 自然色 */
+  --c-grass:      #5ea24a;
+  --c-grass-dark: #3f7a32;
+  --c-soil:       #9a6a3a;
+  --c-soil-dark:  #6e4522;
+  --c-sky:        #7ec8e3;
+
+  /* 强调色（70-20-10 中的 10） */
+  --c-gold:       #ffcb00;
+  --c-gold-dark:  #c99a00;
+  --c-red:        #b04a3a;
+  --c-red-dark:   #8a3528;
+
+  /* 界面底色 */
+  --c-panel:      #2b2018;   /* 深木底（对话框） */
+  --c-panel-line: #1a120c;
+
+  /* 文本 */
+  --c-text:       #4a3520;
+  --c-text-light: #f8ecc8;
+
+  /* 像素单位 */
+  --px: 4px;
+
+  --font-pixel-en: 'Press Start 2P', 'Zpix', monospace;
+  --font-pixel-zh: 'Zpix', 'Press Start 2P', monospace;
+
+  /* 交互焦点 */
+  --focus-ring: 0 0 0 4px rgba(255, 203, 0, .65);
+}
+
+/* ---------- 重置与基础 ---------- */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-pixel-zh);
+  color: var(--c-text);
+  /* 点阵纹理 + 天空/草地渐变（multi-layer，从上到下） */
+  background-color: var(--c-sky);
+  background-image:
+    radial-gradient(rgba(0,0,0,.06) 1px, transparent 1px),
+    linear-gradient(180deg, var(--c-sky) 0%, var(--c-sky) 55%, var(--c-grass) 55%, var(--c-grass) 100%);
+  background-size: 6px 6px, 100% 100%;
+  background-repeat: repeat, no-repeat;
+  -webkit-font-smoothing: none;
+  text-rendering: optimizeSpeed;
+  image-rendering: pixelated;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* [hidden] 优先级兜底（避免被 display:flex 等覆盖） */
+.screen[hidden],
+.modal-backdrop[hidden],
+.rpg-dialog[hidden] {
+  display: none !important;
+}
+
+/* ---------- 像素描边文本工具 ---------- */
+.pixel-outline {
+  text-shadow:
+     2px  0 0 var(--c-outline), -2px  0 0 var(--c-outline),
+     0  2px 0 var(--c-outline),  0 -2px 0 var(--c-outline),
+     2px  2px 0 var(--c-outline), -2px -2px 0 var(--c-outline),
+     2px -2px 0 var(--c-outline), -2px  2px 0 var(--c-outline);
+}
+
+/* ---------- 背景画布 ---------- */
+.bg-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  display: block;
+}
+
+/* ---------- 屏幕容器 ---------- */
+.screen {
+  position: relative;
+  z-index: 1;
+}
+
+.screen[hidden] { display: none !important; }
+
+/* ---------- 主菜单 ---------- */
+.screen--menu {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(20px, 4vh, 44px);
+  padding: 24px 16px;
+  text-align: center;
+}
+
+.menu-head { position: relative; }
+
+.game-title {
+  font-family: var(--font-pixel-en);
+  font-size: clamp(28px, 7vw, 64px);
+  color: var(--c-gold);
+  letter-spacing: 2px;
+  line-height: 1.25;
+  text-shadow:
+     4px  0 0 var(--c-outline), -4px  0 0 var(--c-outline),
+     0  4px 0 var(--c-outline),  0 -4px 0 var(--c-outline),
+     4px  4px 0 var(--c-outline), -4px -4px 0 var(--c-outline),
+     4px -4px 0 var(--c-outline), -4px  4px 0 var(--c-outline),
+     0 10px 0 rgba(0,0,0,.35);
+  animation: title-bob 3s ease-in-out infinite;
+}
+
+@keyframes title-bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+
+.game-subtitle {
+  margin-top: 14px;
+  font-size: clamp(18px, 3.6vw, 26px);
+  color: var(--c-text-light);
+  text-shadow:
+     2px  0 0 var(--c-outline), -2px  0 0 var(--c-outline),
+     0  2px 0 var(--c-outline),  0 -2px 0 var(--c-outline);
+}
+
+.game-subtitle-en {
+  margin-top: 8px;
+  font-family: var(--font-pixel-en);
+  font-size: clamp(10px, 2vw, 14px);
+  color: #fdf6e3;
+  text-shadow:
+     2px  0 0 var(--c-outline), -2px  0 0 var(--c-outline),
+     0  2px 0 var(--c-outline),  0 -2px 0 var(--c-outline);
+}
+
+/* ---------- 菜单按钮组 ---------- */
+.menu-box {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: min(320px, 84vw);
+  padding: 24px 22px;
+  background: var(--c-panel);
+  border: var(--px) solid var(--c-panel-line);
+  box-shadow:
+    inset 0 0 0 4px rgba(255,255,255,.07),
+    0 8px 0 rgba(0,0,0,.35);
+  /* 点阵装饰 */
+  background-image: radial-gradient(rgba(255,255,255,.05) 1px, transparent 1px);
+  background-size: 8px 8px;
+}
+
+/* ---------- 像素按钮 ---------- */
+.pixel-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 52px;              /* ≥44px 触摸目标 */
+  padding: 10px 20px;
+  font-family: var(--font-pixel-zh);
+  font-size: 17px;
+  letter-spacing: 2px;
+  color: var(--c-text);
+  background: var(--c-wood-light);
+  border: 0;
+  /* chunky 像素描边 + 底部阴影 */
+  box-shadow:
+    inset  4px  0 0 var(--c-outline),
+    inset -4px  0 0 var(--c-outline),
+    inset  0  4px 0 var(--c-outline),
+    inset  0 -4px 0 var(--c-outline),
+    0 6px 0 var(--c-wood-dark);
+  transition: transform .05s steps(2), box-shadow .05s steps(2);
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.pixel-btn .btn-icon {
+  font-size: 15px;
+}
+
+.pixel-btn:hover {
+  background: #f3cf8e;
+}
+
+.pixel-btn:active,
+.pixel-btn.is-pressed {
+  transform: translateY(5px);
+  box-shadow:
+    inset  4px  0 0 var(--c-outline),
+    inset -4px  0 0 var(--c-outline),
+    inset  0  4px 0 var(--c-outline),
+    inset  0 -4px 0 var(--c-outline),
+    0 1px 0 var(--c-wood-dark);
+}
+
+/* 主按钮（金盏黄 CTA） */
+.pixel-btn--primary {
+  background: var(--c-gold);
+  box-shadow:
+    inset  4px  0 0 var(--c-outline),
+    inset -4px  0 0 var(--c-outline),
+    inset  0  4px 0 var(--c-outline),
+    inset  0 -4px 0 var(--c-outline),
+    0 6px 0 var(--c-gold-dark);
+  color: var(--c-outline);
+  font-weight: bold;
+  animation: cta-glow 1.6s ease-in-out infinite;
+}
+
+.pixel-btn--primary:hover { background: #ffd94d; }
+.pixel-btn--primary:active,
+.pixel-btn--primary.is-pressed {
+  transform: translateY(5px);
+  box-shadow:
+    inset  4px  0 0 var(--c-outline),
+    inset -4px  0 0 var(--c-outline),
+    inset  0  4px 0 var(--c-outline),
+    inset  0 -4px 0 var(--c-outline),
+    0 1px 0 var(--c-gold-dark);
+}
+
+@keyframes cta-glow {
+  0%, 100% { filter: brightness(1); }
+  50%      { filter: brightness(1.12); }
+}
+
+.pixel-btn--small {
+  min-height: 44px;
+  padding: 8px 16px;
+  font-size: 15px;
+}
+
+/* 焦点可见（无障碍） */
+.pixel-btn:focus-visible,
+.rpg-dialog__next:focus-visible,
+.rpg-window__footer .pixel-btn:focus-visible {
+  outline: none;
+  box-shadow:
+    inset  4px  0 0 var(--c-outline),
+    inset -4px  0 0 var(--c-outline),
+    inset  0  4px 0 var(--c-outline),
+    inset  0 -4px 0 var(--c-outline),
+    0 6px 0 var(--c-wood-dark),
+    var(--focus-ring);
+}
+
+/* ---------- 菜单页脚 ---------- */
+.menu-foot { position: relative; }
+
+.version-tag {
+  font-size: 13px;
+  color: var(--c-text-light);
+  background: rgba(43, 32, 24, .85);
+  padding: 6px 12px;
+  box-shadow: 0 4px 0 rgba(0,0,0,.25);
+}
+
+/* ---------- 加载画面 ---------- */
+.screen--loading {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  width: min(360px, 84vw);
+  padding: 34px 26px;
+  background: var(--c-panel);
+  border: var(--px) solid var(--c-panel-line);
+  box-shadow:
+    inset 0 0 0 4px rgba(255,255,255,.07),
+    0 8px 0 rgba(0,0,0,.35);
+  background-image: radial-gradient(rgba(255,255,255,.05) 1px, transparent 1px);
+  background-size: 8px 8px;
+}
+
+/* 像素旋转方块 */
+.pixel-spinner {
+  width: 34px;
+  height: 34px;
+  background: var(--c-gold);
+  border: 4px solid var(--c-outline);
+  animation: spin-step 1s steps(4) infinite;
+}
+
+@keyframes spin-step {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.progress-track {
+  width: 100%;
+  height: 22px;
+  background: var(--c-panel-line);
+  border: 4px solid var(--c-outline);
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.08);
+  overflow: hidden;
+}
+
+.progress-fill {
+  width: 0%;
+  height: 100%;
+  background: repeating-linear-gradient(45deg, var(--c-grass) 0 6px, var(--c-grass-dark) 6px 12px);
+  transition: width .18s steps(6);
+}
+
+.loading-text {
+  font-size: 15px;
+  color: var(--c-text-light);
+  letter-spacing: 2px;
+  animation: blink 1s steps(2) infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: .45; }
+}
+
+/* ---------- 游戏场景 ---------- */
+.screen--game { height: 100%; }
+
+.game-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  image-rendering: pixelated;
+}
+
+/* ---------- HUD ---------- */
+.hud {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  right: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.hud-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(43, 32, 24, .88);
+  border: 3px solid var(--c-outline);
+  box-shadow: 0 4px 0 rgba(0,0,0,.3);
+  font-size: 14px;
+  color: var(--c-text-light);
+  white-space: nowrap;
+}
+
+.hud-label {
+  color: #c9b58a;
+  font-size: 12px;
+}
+
+.hud-value {
+  font-family: var(--font-pixel-en);
+  font-size: 13px;
+  color: var(--c-gold);
+}
+
+.energy-track {
+  width: min(90px, 18vw);
+  height: 16px;
+  background: var(--c-panel-line);
+  border: 3px solid var(--c-outline);
+  overflow: hidden;
+}
+
+.energy-fill {
+  height: 100%;
+  width: 100%;
+  background: repeating-linear-gradient(45deg, #7ad24f 0 5px, #58a835 5px 10px);
+  transition: width .3s steps(4);
+}
+
+/* ---------- RPG 对话框 ---------- */
+.rpg-dialog {
+  position: absolute;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  width: min(620px, calc(100% - 32px));
+  z-index: 6;
+  background: var(--c-panel);
+  border: var(--px) solid var(--c-panel-line);
+  box-shadow:
+    inset 0 0 0 4px rgba(255,255,255,.07),
+    0 8px 0 rgba(0,0,0,.4);
+  background-image: radial-gradient(rgba(255,255,255,.05) 1px, transparent 1px);
+  background-size: 8px 8px;
+  padding: 16px 18px 16px 20px;
+}
+
+.rpg-dialog__name {
+  display: inline-block;
+  font-size: 13px;
+  color: var(--c-gold);
+  background: var(--c-outline);
+  padding: 4px 10px;
+  margin-bottom: 10px;
+  letter-spacing: 2px;
+}
+
+.rpg-dialog__text {
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--c-text-light);
+  min-height: 2.2em;
+  white-space: pre-line;
+}
+
+.rpg-dialog__next {
+  position: absolute;
+  right: 12px;
+  bottom: 8px;
+  width: 40px;
+  height: 34px;
+  border: 3px solid var(--c-outline);
+  background: var(--c-gold);
+  color: var(--c-outline);
+  font-size: 14px;
+  animation: bounce-y 1s steps(2) infinite;
+}
+
+@keyframes bounce-y {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(3px); }
+}
+
+/* ---------- 浮动金币 ---------- */
+.float-area {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.float-coin {
+  position: absolute;
+  font-family: var(--font-pixel-en);
+  font-size: 14px;
+  color: var(--c-gold);
+  text-shadow: 2px 2px 0 var(--c-outline);
+  animation: coin-rise 1.1s steps(10) forwards;
+}
+
+@keyframes coin-rise {
+  0%   { opacity: 0; transform: translateY(0); }
+  15%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-70px); }
+}
+
+/* ---------- 游戏控制区 ---------- */
+.game-controls {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  z-index: 5;
+}
+
+.hint-text {
+  font-size: 13px;
+  color: var(--c-text-light);
+  background: rgba(43, 32, 24, .75);
+  padding: 8px 12px;
+  border: 3px solid var(--c-outline);
+  box-shadow: 0 4px 0 rgba(0,0,0,.3);
+  white-space: nowrap;
+}
+
+/* ---------- 任务标签（HUD） ---------- */
+.hud-task {
+  flex: 1 1 100%;
+  display: inline-block;
+  width: fit-content;
+  margin-left: auto;
+  font-size: 14px;
+  color: var(--c-text-light);
+  background: rgba(43, 32, 24, .88);
+  border: 3px solid var(--c-outline);
+  box-shadow: 0 4px 0 rgba(0,0,0,.3);
+  padding: 7px 12px;
+  letter-spacing: 1px;
+}
+
+/* ---------- 交互提示（靠近可操作对象） ---------- */
+.interact-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 96px;
+  transform: translateX(-50%);
+  z-index: 8;
+  font-size: 15px;
+  color: var(--c-outline);
+  background: var(--c-gold);
+  border: 3px solid var(--c-outline);
+  box-shadow: 0 4px 0 rgba(0,0,0,.3);
+  padding: 8px 16px;
+  white-space: nowrap;
+  animation: hint-pop .18s steps(4) both;
+  pointer-events: none;
+}
+
+.interact-hint[hidden] { display: none; }
+
+@keyframes hint-pop {
+  from { transform: translateX(-50%) scale(.85); opacity: 0; }
+  to   { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+
+/* ---------- 商店 ---------- */
+.shop-info {
+  font-size: 15px;
+  line-height: 2;
+  color: var(--c-text);
+  background: rgba(138, 90, 50, .12);
+  border: 3px dashed rgba(138, 90, 50, .45);
+  padding: 12px 14px;
+  margin-bottom: 16px;
+}
+
+.shop-num {
+  font-family: var(--font-pixel-en);
+  font-size: 14px;
+  color: var(--c-red);
+}
+
+.shop-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.shop-actions .pixel-btn {
+  flex: 1 1 140px;
+}
+
+/* ---------- 模态窗口（操作说明 / 关于） ---------- */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(26, 18, 12, .72);
+  backdrop-filter: none;
+}
+
+.rpg-window {
+  width: min(460px, 92vw);
+  background: var(--c-paper);
+  border: var(--px) solid var(--c-outline);
+  box-shadow:
+    inset 0 0 0 4px rgba(255,255,255,.35),
+    0 10px 0 rgba(0,0,0,.4);
+  background-image: radial-gradient(rgba(0,0,0,.05) 1px, transparent 1px);
+  background-size: 8px 8px;
+  animation: pop-in .18s steps(4) both;
+}
+
+@keyframes pop-in {
+  from { transform: scale(.82); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+.rpg-window__title {
+  font-size: 19px;
+  color: var(--c-text-light);
+  background: var(--c-red);
+  border-bottom: var(--px) solid var(--c-outline);
+  padding: 12px 18px;
+  letter-spacing: 4px;
+  text-shadow: 2px 2px 0 rgba(0,0,0,.35);
+}
+
+.rpg-window__body {
+  padding: 18px;
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--c-text);
+}
+
+.rpg-window__body p { margin-bottom: 10px; }
+.rpg-window__body p:last-child { margin-bottom: 0; }
+
+.help-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.help-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.key {
+  flex: none;
+  font-family: var(--font-pixel-en);
+  font-size: 11px;
+  color: var(--c-text-light);
+  background: var(--c-wood-dark);
+  border: 3px solid var(--c-outline);
+  box-shadow: 0 3px 0 rgba(0,0,0,.3);
+  padding: 5px 8px;
+  min-width: 34px;
+  text-align: center;
+}
+
+.rpg-note {
+  margin-top: 16px;
+  font-size: 14px;
+  color: var(--c-wood-dark);
+  border-top: 3px dashed rgba(138, 90, 50, .45);
+  padding-top: 12px;
+}
+
+.rpg-window__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 0 18px 18px;
+}
+
+/* ---------- 响应式（移动优先增强） ---------- */
+@media (max-width: 640px) {
+  .menu-box { gap: 12px; padding: 18px 14px; }
+  .pixel-btn { min-height: 50px; font-size: 16px; }
+
+  .hud {
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    gap: 6px;
+  }
+  .hud-item { padding: 6px 9px; font-size: 12px; }
+  .hud-label { font-size: 11px; }
+  .hud-value { font-size: 12px; }
+  .energy-track { width: 56px; height: 13px; }
+  .hud-task { font-size: 12px; padding: 6px 10px; }
+
+  .rpg-dialog { bottom: 16px; padding: 13px 14px; }
+  .rpg-dialog__text { font-size: 16px; }
+
+  .game-controls { left: 10px; bottom: 10px; }
+  .hint-text { display: none; }   /* 移动端隐藏提示，减少遮挡 */
+
+  .interact-hint { bottom: 76px; font-size: 14px; white-space: normal; max-width: 80vw; text-align: center; }
+}
+
+@media (max-width: 420px) {
+  .game-title { font-size: 26px; }
+  .menu-box { width: 88vw; }
+}
+
+/* ---------- 动画偏好（无障碍） ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}

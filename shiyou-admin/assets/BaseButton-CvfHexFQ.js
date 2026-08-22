@@ -1,1 +1,0 @@
-import{o as l,c as n,y as o,n as i}from"./index--ZC9sW_M.js";const r=["disabled"],c={__name:"BaseButton",props:{variant:{type:String,default:""},disabled:{type:Boolean,default:!1}},emits:["click"],setup(e){return(t,a)=>(l(),n("button",{class:i(["btn",e.variant]),disabled:e.disabled,onClick:a[0]||(a[0]=s=>t.$emit("click",s))},[o(t.$slots,"default")],10,r))}};export{c as _};

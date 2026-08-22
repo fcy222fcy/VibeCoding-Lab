@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="XINGLUGU 像素农场物语 —— 致敬星露谷物语的 16-bit 像素风农场小游戏" />
+  <title>XINGLUGU · 像素农场物语</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ═══════════════ 背景场景（菜单时的傍晚农场远景） ═══════════════ -->
+  <canvas id="bgCanvas" class="bg-canvas" aria-hidden="true"></canvas>
+
+  <!-- ═══════════════ 主菜单 ═══════════════ -->
+  <main id="mainMenu" class="screen screen--menu" aria-label="主菜单">
+    <header class="menu-head">
+      <h1 class="game-title">XINGLUGU</h1>
+      <p class="game-subtitle">像素农场物语</p>
+      <p class="game-subtitle-en">~ a cozy pixel farm ~</p>
+    </header>
+
+    <nav class="menu-box" aria-label="菜单选项">
+      <button id="btnStart" class="pixel-btn pixel-btn--primary" type="button">
+        <span class="btn-icon">▶</span> 开始游戏
+      </button>
+      <button id="btnSound" class="pixel-btn" type="button" aria-pressed="true">
+        <span class="btn-icon">♪</span> 音效：<span id="soundLabel">开</span>
+      </button>
+      <button id="btnHelp" class="pixel-btn" type="button">
+        <span class="btn-icon">?</span> 操作说明
+      </button>
+      <button id="btnAbout" class="pixel-btn" type="button">
+        <span class="btn-icon">★</span> 关于
+      </button>
+    </nav>
+
+    <footer class="menu-foot">
+      <p class="version-tag">v1.0.0 · 致敬《星露谷物语》(Stardew Valley)</p>
+    </footer>
+  </main>
+
+  <!-- ═══════════════ 加载画面 ═══════════════ -->
+  <section id="loadingScreen" class="screen screen--loading" aria-label="加载中" aria-live="polite" hidden>
+    <div class="loading-box">
+      <div class="pixel-spinner" aria-hidden="true"></div>
+      <div class="progress-track" role="progressbar" aria-label="加载进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div id="progressFill" class="progress-fill"></div>
+      </div>
+      <p id="loadingText" class="loading-text">正在播种春天……</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 游戏场景 ═══════════════ -->
+  <section id="gameScreen" class="screen screen--game" aria-label="游戏场景" hidden>
+    <canvas id="gameCanvas" class="game-canvas" role="img" aria-label="像素农场场景"></canvas>
+
+    <!-- 顶部 HUD -->
+    <div class="hud" aria-live="polite">
+      <div class="hud-item hud-item--date">
+        <span class="hud-label">日期</span>
+        <span id="hudDate" class="hud-value">春 1 日</span>
+      </div>
+      <div class="hud-item hud-item--gold">
+        <span class="hud-label">金币</span>
+        <span id="hudGold" class="hud-value">50 G</span>
+      </div>
+      <div class="hud-item hud-item--seeds">
+        <span class="hud-label">种子</span>
+        <span id="hudSeeds" class="hud-value">×3</span>
+      </div>
+      <div class="hud-item hud-item--energy">
+        <span class="hud-label">体力</span>
+        <div id="energyBar" class="energy-track">
+          <div id="energyFill" class="energy-fill"></div>
+        </div>
+        <span id="hudEnergy" class="hud-value">100%</span>
+      </div>
+      <div id="hudTask" class="hud-task">任务：收获 3 个作物 (0/3)</div>
+    </div>
+
+    <!-- 像素风 RPG 对话框 -->
+    <div id="dialogBox" class="rpg-dialog" role="dialog" aria-label="游戏对话" hidden>
+      <p id="dialogName" class="rpg-dialog__name" hidden></p>
+      <p id="dialogText" class="rpg-dialog__text"></p>
+      <button id="dialogNext" class="rpg-dialog__next" type="button" aria-label="继续">▼</button>
+    </div>
+
+    <!-- 浮动金币提示（收获反馈） -->
+    <div id="floatArea" class="float-area" aria-hidden="true"></div>
+
+    <div class="game-controls">
+      <button id="btnBack" class="pixel-btn pixel-btn--small" type="button">返回菜单</button>
+      <p class="hint-text">点击农田中的作物可收获</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 操作说明对话框 ═══════════════ -->
+  <div id="helpModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="helpTitle" hidden>
+    <div class="rpg-window">
+      <h2 id="helpTitle" class="rpg-window__title">操作说明</h2>
+      <div class="rpg-window__body">
+        <ul class="help-list">
+          <li><span class="key">W A S D</span> 自由移动农夫</li>
+          <li><span class="key">方向键</span> 也可以移动</li>
+          <li><span class="key">空格 / E</span> 靠近农田播种 / 收获</li>
+          <li><span class="key">B</span> 打开种子商店</li>
+          <li><span class="key">M</span> 打开 / 关闭音效</li>
+          <li><span class="key">ESC</span> 返回菜单</li>
+        </ul>
+        <p class="rpg-note">种下希望，收获快乐。完成右上角的任务，赚取金币吧！</p>
+      </div>
+      <div class="rpg-window__footer">
+        <button id="helpClose" class="pixel-btn pixel-btn--small" type="button">知道了</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 关于对话框 ═══════════════ -->
+  <div id="aboutModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="aboutTitle" hidden>
+    <div class="rpg-window">
+      <h2 id="aboutTitle" class="rpg-window__title">关于 XINGLUGU</h2>
+      <div class="rpg-window__body">
+        <p>XINGLUGU 是一个 16-bit 像素风农场小游戏前端项目，视觉语言致敬 <strong>《星露谷物语》(Stardew Valley)</strong>：温暖大地色系、无抖色干净色块、1px 深色描边、像素字体与复古 RPG 界面。</p>
+        <p>纯 HTML / CSS / JavaScript 实现，无任何第三方依赖，字体本地打包，可直接在浏览器中运行。</p>
+      </div>
+      <div class="rpg-window__footer">
+        <button id="aboutClose" class="pixel-btn pixel-btn--small" type="button">知道了</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ 种子商店 ═══════════════ -->
+  <div id="shopModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="shopTitle" hidden>
+    <div class="rpg-window">
+      <h2 id="shopTitle" class="rpg-window__title">种子商店</h2>
+      <div class="rpg-window__body">
+        <div class="shop-info">
+          <p>🌱 种子 <strong>5 G / 颗</strong></p>
+          <p>当前持有：<span id="shopSeeds" class="shop-num">3</span> 颗　|　金币：<span id="shopGold" class="shop-num">50 G</span></p>
+        </div>
+        <div class="shop-actions">
+          <button id="shopBuy1" class="pixel-btn pixel-btn--primary" type="button">买 1 颗（5 G）</button>
+          <button id="shopBuy5" class="pixel-btn" type="button">买 5 颗（25 G）</button>
+        </div>
+      </div>
+      <div class="rpg-window__footer">
+        <button id="shopClose" class="pixel-btn pixel-btn--small" type="button">离开</button>
+      </div>
+    </div>
+  </div>
+
+  <noscript>
+    <p style="font-family:monospace;padding:16px">XINGLUGU 需要启用 JavaScript 才能运行。</p>
+  </noscript>
+
+  <script src="js/audio.js"></script>
+  <script src="js/scene.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
