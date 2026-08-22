@@ -48,6 +48,10 @@ jobs:
           cp -r todolist/dist site/todolist
           cp -r todolist-react/dist site/todolist-react
           cp -r management-system/shiyou-admin/dist site/shiyou-admin
+          # XINGLUGU 为纯静态项目（相对路径引用），原样复制即可
+          cp -r XINGLUGU site/XINGLUGU
+          # 清理构建残留的调试产物（.gitignore 已覆盖大部分）
+          rm -rf site/XINGLUGU/dist
 
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4

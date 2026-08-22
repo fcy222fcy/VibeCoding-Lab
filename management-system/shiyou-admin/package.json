@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:gh": "vite build --base=/vibecoding/shiyou-admin/",
+    "build:gh": "vite build --base=/VibeCoding-Lab/shiyou-admin/",
     "preview": "vite preview"
   },
   "dependencies": {

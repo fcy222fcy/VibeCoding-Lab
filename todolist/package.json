@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:gh": "vite build --base=/vibecoding/todolist/",
+    "build:gh": "vite build --base=/VibeCoding-Lab/todolist/",
     "preview": "vite preview"
   },
   "dependencies": {
