@@ -32,15 +32,12 @@ const companyName = { openai: 'OpenAI', deepseek: 'DeepSeek' };
 const formatDate = (date) => `${Number(date.slice(5, 7))}月${Number(date.slice(8, 10))}日`;
 const columnWidth = 240;
 
-function branchPath(points, end, branchY, bend) {
+function branchPath(points, end, branchY) {
   if (!points.length) return '';
   const first = points[0].x;
-  let path = `M ${Math.max(18, first - 100)} 205 C ${first - 70} 205 ${first - 58} ${branchY} ${first} ${branchY}`;
-  for (let i = 1; i < points.length; i++) {
-    const midpoint = (points[i - 1].x + points[i].x) / 2;
-    path += ` Q ${midpoint} ${branchY + bend} ${points[i].x} ${branchY}`;
-  }
-  return `${path} L ${Math.min(end, points[points.length - 1].x + 112)} ${branchY}`;
+  const start = Math.max(18, first - 100);
+  const finish = Math.min(end, points[points.length - 1].x + 112);
+  return `M ${start} 205 C ${start + 42} 205 ${first - 58} ${branchY} ${first} ${branchY} H ${finish}`;
 }
 
 function branchDiagram(items) {
@@ -50,7 +47,7 @@ function branchDiagram(items) {
   const deepseek = points.filter((point) => point.company === 'deepseek');
   const upperNodes = openai.map(({ x }) => `<path d="M ${x} 130 V 112" class="branch-tick openai"/><circle cx="${x}" cy="130" r="6" class="branch-node openai"/>`).join('');
   const lowerNodes = deepseek.map(({ x }) => `<path d="M ${x} 280 V 298" class="branch-tick deepseek"/><circle cx="${x}" cy="280" r="6" class="branch-node deepseek"/>`).join('');
-  return `<svg class="branch-diagram" viewBox="0 0 ${width} 420" preserveAspectRatio="none" aria-hidden="true"><path d="M 0 205 C ${Math.round(width * .18)} 208 ${Math.round(width * .34)} 207 ${Math.round(width * .5)} 207 S ${Math.round(width * .84)} 205 ${width} 205" class="time-path"/><path d="${branchPath(openai, width, 130, -5)}" class="branch-path openai"/><path d="${branchPath(deepseek, width, 280, 6)}" class="branch-path deepseek"/>${upperNodes}${lowerNodes}</svg>`;
+  return `<svg class="branch-diagram" viewBox="0 0 ${width} 420" preserveAspectRatio="none" aria-hidden="true"><path d="M 0 205 H ${width}" class="time-path"/><path d="${branchPath(openai, width, 130)}" class="branch-path openai"/><path d="${branchPath(deepseek, width, 280)}" class="branch-path deepseek"/>${upperNodes}${lowerNodes}</svg>`;
 }
 
 function render() {
