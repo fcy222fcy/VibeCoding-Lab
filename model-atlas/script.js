@@ -30,12 +30,12 @@ let companyFilter = 'all';
 
 const companyName = { openai: 'OpenAI', deepseek: 'DeepSeek' };
 const formatDate = (date) => `${Number(date.slice(5, 7))}月${Number(date.slice(8, 10))}日`;
-const columnWidth = 288;
+const columnWidth = 240;
 
 function branchPath(points, end, branchY, bend) {
   if (!points.length) return '';
   const first = points[0].x;
-  let path = `M ${Math.max(18, first - 118)} 345 C ${first - 82} 345 ${first - 64} ${branchY} ${first} ${branchY}`;
+  let path = `M ${Math.max(18, first - 100)} 205 C ${first - 70} 205 ${first - 58} ${branchY} ${first} ${branchY}`;
   for (let i = 1; i < points.length; i++) {
     const midpoint = (points[i - 1].x + points[i].x) / 2;
     path += ` Q ${midpoint} ${branchY + bend} ${points[i].x} ${branchY}`;
@@ -48,9 +48,9 @@ function branchDiagram(items) {
   const points = items.map((item, index) => ({ company: item.company, x: index * columnWidth + columnWidth / 2 }));
   const openai = points.filter((point) => point.company === 'openai');
   const deepseek = points.filter((point) => point.company === 'deepseek');
-  const upperNodes = openai.map(({ x }) => `<path d="M ${x} 270 V 246" class="branch-tick openai"/><circle cx="${x}" cy="270" r="7" class="branch-node openai"/>`).join('');
-  const lowerNodes = deepseek.map(({ x }) => `<path d="M ${x} 420 V 444" class="branch-tick deepseek"/><circle cx="${x}" cy="420" r="7" class="branch-node deepseek"/>`).join('');
-  return `<svg class="branch-diagram" viewBox="0 0 ${width} 640" preserveAspectRatio="none" aria-hidden="true"><path d="M 0 345 C ${Math.round(width * .18)} 355 ${Math.round(width * .34)} 351 ${Math.round(width * .5)} 351 S ${Math.round(width * .84)} 346 ${width} 345" class="time-path"/><path d="${branchPath(openai, width, 270, -9)}" class="branch-path openai"/><path d="${branchPath(deepseek, width, 420, 12)}" class="branch-path deepseek"/>${upperNodes}${lowerNodes}</svg>`;
+  const upperNodes = openai.map(({ x }) => `<path d="M ${x} 130 V 112" class="branch-tick openai"/><circle cx="${x}" cy="130" r="6" class="branch-node openai"/>`).join('');
+  const lowerNodes = deepseek.map(({ x }) => `<path d="M ${x} 280 V 298" class="branch-tick deepseek"/><circle cx="${x}" cy="280" r="6" class="branch-node deepseek"/>`).join('');
+  return `<svg class="branch-diagram" viewBox="0 0 ${width} 420" preserveAspectRatio="none" aria-hidden="true"><path d="M 0 205 C ${Math.round(width * .18)} 208 ${Math.round(width * .34)} 207 ${Math.round(width * .5)} 207 S ${Math.round(width * .84)} 205 ${width} 205" class="time-path"/><path d="${branchPath(openai, width, 130, -5)}" class="branch-path openai"/><path d="${branchPath(deepseek, width, 280, 6)}" class="branch-path deepseek"/>${upperNodes}${lowerNodes}</svg>`;
 }
 
 function render() {
@@ -72,8 +72,8 @@ function render() {
   timeline.innerHTML = `<div class="timeline-track">${branchDiagram(visible)}${visible.map((item, position) => {
     const year = item.date.slice(0, 4);
     const firstInYear = position === 0 || visible[position - 1].date.slice(0, 4) !== year;
-    const card = `<button type="button" class="milestone-card ${item.company}" data-index="${milestones.indexOf(item)}" aria-label="查看 ${item.name} 详情"><span class="card-top"><span class="company-tag">${companyName[item.company]}</span><span class="card-type">${item.type}</span></span><span class="card-main"><strong>${item.name}</strong><span>${item.summary}</span></span><span class="card-bottom"><span>查看详情</span><span class="card-arrow" aria-hidden="true">↗</span></span></button>`;
-    return `<div class="event-column" ${firstInYear ? `id="year-${year}"` : ''}><div class="column-year">${firstInYear ? `<strong>${year}</strong><span>MODEL ERA</span>` : ''}</div><div class="lane-slot openai">${item.company === 'openai' ? card : ''}</div><div class="branch-space openai"></div><div class="axis-stop"><span class="axis-date">${formatDate(item.date)}</span></div><div class="branch-space deepseek"></div><div class="lane-slot deepseek">${item.company === 'deepseek' ? card : ''}</div></div>`;
+    const label = `<button type="button" class="model-label ${item.company}" data-index="${milestones.indexOf(item)}" aria-label="查看 ${item.name} 详情"><strong>${item.name}</strong><span>${item.type}</span></button>`;
+    return `<div class="event-column" ${firstInYear ? `id="year-${year}"` : ''}><div class="model-slot openai">${item.company === 'openai' ? label : ''}</div><div class="year-mark">${firstInYear ? year : ''}</div><div class="date-mark">${formatDate(item.date)}</div><div class="model-slot deepseek">${item.company === 'deepseek' ? label : ''}</div></div>`;
   }).join('')}</div>`;
 }
 
@@ -103,7 +103,38 @@ timeline.addEventListener('keydown', (event) => {
   event.preventDefault();
   timeline.scrollBy({ left: event.key === 'ArrowRight' ? 260 : -260, behavior: 'smooth' });
 });
+
+let dragState = null;
+let ignoreClickUntil = 0;
+timeline.addEventListener('pointerdown', (event) => {
+  if (event.pointerType === 'touch' || event.button !== 0) return;
+  dragState = { pointerId: event.pointerId, startX: event.clientX, scrollLeft: timeline.scrollLeft, moved: false };
+});
+timeline.addEventListener('pointermove', (event) => {
+  if (!dragState || event.pointerId !== dragState.pointerId) return;
+  const distance = event.clientX - dragState.startX;
+  if (!dragState.moved && Math.abs(distance) < 5) return;
+  if (!dragState.moved) {
+    dragState.moved = true;
+    timeline.classList.add('is-dragging');
+    timeline.setPointerCapture(event.pointerId);
+  }
+  event.preventDefault();
+  timeline.scrollLeft = dragState.scrollLeft - distance;
+});
+timeline.addEventListener('pointerleave', () => {
+  if (dragState && !dragState.moved) dragState = null;
+});
+function finishDrag(event) {
+  if (!dragState || event.pointerId !== dragState.pointerId) return;
+  if (dragState.moved) ignoreClickUntil = Date.now() + 250;
+  timeline.classList.remove('is-dragging');
+  dragState = null;
+}
+timeline.addEventListener('pointerup', finishDrag);
+timeline.addEventListener('pointercancel', finishDrag);
 timeline.addEventListener('click', (event) => {
+  if (Date.now() < ignoreClickUntil) return;
   const card = event.target.closest('[data-index]');
   if (!card) return;
   const item = milestones[Number(card.dataset.index)];
