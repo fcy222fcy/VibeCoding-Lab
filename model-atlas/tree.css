@@ -141,6 +141,66 @@
 .model-label.deepseek:hover strong,
 .model-label.deepseek:focus-visible strong { color: #3c9651; text-decoration: underline; }
 .model-label:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+
+.model-popover {
+  position: fixed;
+  z-index: 20;
+  width: min(360px, calc(100vw - 24px));
+  padding: 20px 22px 18px;
+  border: 1px solid #dfe3dc;
+  border-top: 3px solid var(--popover-accent, #e3ba52);
+  border-radius: 12px;
+  background: #fffefa;
+  color: #26332d;
+  box-shadow: 0 18px 48px #26332d24, 0 3px 10px #26332d0d;
+  font-family: 'DM Sans', 'Microsoft YaHei', sans-serif;
+}
+.model-popover[hidden] { display: none; }
+.model-popover #popover-content {
+  max-height: min(340px, calc(100vh - 70px));
+  overflow-y: auto;
+  padding-right: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd0c7 transparent;
+}
+.model-popover[data-company='deepseek'] { --popover-accent: #67ac70; }
+.model-popover::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--arrow-x) - 7px);
+  width: 12px;
+  height: 12px;
+  transform: rotate(45deg);
+  background: #fffefa;
+  border: 1px solid #dfe3dc;
+}
+.model-popover[data-placement='below']::before { top: -7px; border-right: 0; border-bottom: 0; }
+.model-popover[data-placement='above']::before { bottom: -7px; border-left: 0; border-top: 0; }
+.popover-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 50%;
+  background: #f0f1ed;
+  color: #69716d;
+  font-size: 19px;
+  line-height: 1;
+}
+.popover-close:hover { background: #e6e9e2; color: #26332d; }
+.popover-meta { display: flex; align-items: center; gap: 11px; padding-right: 32px; color: #8b938a; font-size: 11px; }
+.popover-company { color: #ae8325; font-weight: 800; }
+.popover-company.deepseek { color: #468b52; }
+.model-popover h3 { margin: 13px 0 7px; font: 800 23px/1.25 Manrope, 'Microsoft YaHei', sans-serif; letter-spacing: -.03em; }
+.popover-type { color: #7b867b; font-size: 11px; }
+.popover-summary { margin: 17px 0 10px; font-size: 13px; font-weight: 700; line-height: 1.65; }
+.popover-detail { margin: 0; color: #69736d; font-size: 12px; line-height: 1.8; }
+.popover-source { display: flex; justify-content: space-between; gap: 15px; margin-top: 17px; padding-top: 13px; border-top: 1px solid #e9ebe5; color: #4c7655; font-size: 11px; font-weight: 800; }
+.model-popover[data-company='openai'] .popover-source { color: #967326; }
+.popover-source:hover { text-decoration: underline; }
+.popover-source span { font-size: 15px; line-height: 1; }
 .year-mark,
 .date-mark { position: absolute; left: 0; width: 100%; text-align: center; pointer-events: none; }
 .year-mark { top: 169px; color: #35403b; font: 800 13px Manrope, sans-serif; }

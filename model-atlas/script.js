@@ -24,9 +24,10 @@ const milestones = [
 const timeline = document.querySelector('#timeline-content');
 const yearLinks = document.querySelector('#year-links');
 const searchInput = document.querySelector('#search-input');
-const dialog = document.querySelector('#detail-dialog');
-const dialogContent = document.querySelector('#dialog-content');
+const popover = document.querySelector('#model-popover');
+const popoverContent = document.querySelector('#popover-content');
 let companyFilter = 'all';
+let activeLabel = null;
 
 const companyName = { openai: 'OpenAI', deepseek: 'DeepSeek' };
 const formatDate = (date) => `${Number(date.slice(5, 7))}月${Number(date.slice(8, 10))}日`;
@@ -51,6 +52,7 @@ function branchDiagram(items) {
 }
 
 function render() {
+  closePopover();
   const term = searchInput.value.trim().toLocaleLowerCase();
   const visible = milestones.filter((item) => (companyFilter === 'all' || item.company === companyFilter) && `${item.name} ${item.type} ${item.summary} ${item.detail} ${companyName[item.company]}`.toLocaleLowerCase().includes(term));
   const years = [...new Set(visible.map((item) => item.date.slice(0, 4)))];
@@ -69,7 +71,7 @@ function render() {
   timeline.innerHTML = `<div class="timeline-track">${branchDiagram(visible)}${visible.map((item, position) => {
     const year = item.date.slice(0, 4);
     const firstInYear = position === 0 || visible[position - 1].date.slice(0, 4) !== year;
-    const label = `<button type="button" class="model-label ${item.company}" data-index="${milestones.indexOf(item)}" aria-label="查看 ${item.name} 详情"><strong>${item.name}</strong><span>${item.type}</span></button>`;
+    const label = `<button type="button" class="model-label ${item.company}" data-index="${milestones.indexOf(item)}" aria-label="查看 ${item.name} 详情" aria-controls="model-popover" aria-expanded="false"><strong>${item.name}</strong><span>${item.type}</span></button>`;
     return `<div class="event-column" ${firstInYear ? `id="year-${year}"` : ''}><div class="model-slot openai">${item.company === 'openai' ? label : ''}</div><div class="year-mark">${firstInYear ? year : ''}</div><div class="date-mark">${formatDate(item.date)}</div><div class="model-slot deepseek">${item.company === 'deepseek' ? label : ''}</div></div>`;
   }).join('')}</div>`;
 }
@@ -113,6 +115,7 @@ timeline.addEventListener('pointermove', (event) => {
   if (!dragState.moved && Math.abs(distance) < 5) return;
   if (!dragState.moved) {
     dragState.moved = true;
+    closePopover();
     timeline.classList.add('is-dragging');
     timeline.setPointerCapture(event.pointerId);
   }
@@ -130,15 +133,60 @@ function finishDrag(event) {
 }
 timeline.addEventListener('pointerup', finishDrag);
 timeline.addEventListener('pointercancel', finishDrag);
+
+function closePopover(restoreFocus = false) {
+  const previousLabel = activeLabel;
+  if (previousLabel) previousLabel.setAttribute('aria-expanded', 'false');
+  activeLabel = null;
+  popover.hidden = true;
+  if (restoreFocus && previousLabel?.isConnected) previousLabel.focus();
+}
+
+function positionPopover() {
+  if (!activeLabel) return;
+  const anchor = activeLabel.getBoundingClientRect();
+  const margin = 12;
+  const width = popover.offsetWidth;
+  const height = popover.offsetHeight;
+  const left = Math.min(Math.max(anchor.left + anchor.width / 2 - width / 2, margin), window.innerWidth - width - margin);
+  const below = anchor.bottom + 14;
+  const above = anchor.top - height - 14;
+  const placeBelow = below + height <= window.innerHeight - margin || above < margin;
+  popover.dataset.placement = placeBelow ? 'below' : 'above';
+  popover.style.left = `${left}px`;
+  popover.style.top = `${Math.max(margin, Math.min(placeBelow ? below : above, window.innerHeight - height - margin))}px`;
+  popover.style.setProperty('--arrow-x', `${Math.min(Math.max(anchor.left + anchor.width / 2 - left, 22), width - 22)}px`);
+}
+
+function openPopover(label) {
+  if (activeLabel === label) {
+    closePopover();
+    return;
+  }
+  closePopover();
+  const item = milestones[Number(label.dataset.index)];
+  popoverContent.innerHTML = `<div class="popover-meta"><span class="popover-company ${item.company}">${companyName[item.company]}</span><time datetime="${item.date}">${item.date}</time></div><h3 id="popover-title">${item.name}</h3><span class="popover-type">${item.type}</span><p class="popover-summary">${item.summary}</p><p class="popover-detail">${item.detail}</p><a class="popover-source" href="${item.source}" target="_blank" rel="noopener noreferrer">查看${item.sourceLabel}<span aria-hidden="true">↗</span></a>`;
+  activeLabel = label;
+  label.setAttribute('aria-expanded', 'true');
+  popover.dataset.company = item.company;
+  popover.hidden = false;
+  positionPopover();
+}
+
 timeline.addEventListener('click', (event) => {
   if (Date.now() < ignoreClickUntil) return;
-  const card = event.target.closest('[data-index]');
-  if (!card) return;
-  const item = milestones[Number(card.dataset.index)];
-  dialogContent.innerHTML = `<div class="dialog-eyebrow"><span class="dialog-company ${item.company}">${companyName[item.company]}</span><span>${item.date}</span></div><h2 id="dialog-title">${item.name}</h2><div class="dialog-rule"></div><span class="dialog-type">${item.type}</span><p class="dialog-lead">${item.summary}</p><p class="dialog-detail">${item.detail}</p><a class="source-link" href="${item.source}" target="_blank" rel="noopener noreferrer">阅读${item.sourceLabel}<span aria-hidden="true">↗</span></a><p class="dialog-note">来源为发布时的官方资料，当前模型可用性请以官方产品页面为准。</p>`;
-  dialog.showModal();
+  const label = event.target.closest('[data-index]');
+  if (label) openPopover(label);
 });
-document.querySelector('#dialog-close').addEventListener('click', () => dialog.close());
-dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); });
+popover.querySelector('.popover-close').addEventListener('click', () => closePopover(true));
+document.addEventListener('click', (event) => {
+  if (!popover.hidden && !popover.contains(event.target) && !event.target.closest('[data-index]')) closePopover();
+});
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && !popover.hidden) closePopover(true);
+});
+timeline.addEventListener('scroll', () => closePopover());
+window.addEventListener('scroll', () => closePopover(), { passive: true });
+window.addEventListener('resize', positionPopover);
 
 render();

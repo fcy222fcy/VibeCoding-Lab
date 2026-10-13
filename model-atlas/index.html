@@ -8,8 +8,8 @@
     <title>模型纪事 · OpenAI × DeepSeek</title>
     <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="./styles.css?v=tree-1" />
-    <link rel="stylesheet" href="./tree.css?v=tree-1" />
-    <script src="./script.js?v=tree-2" defer></script>
+    <link rel="stylesheet" href="./tree.css?v=popover-1" />
+    <script src="./script.js?v=popover-1" defer></script>
   </head>
   <body>
     <div class="site-shell">
@@ -49,7 +49,7 @@
         <section class="timeline-section" id="timeline" aria-labelledby="timeline-title">
           <div class="section-wrap">
             <div class="section-kicker"><span class="tiny-square"></span> EXPLORE THE TIMELINE / 01</div>
-            <div class="section-heading"><div><h2 id="timeline-title">发展时间线<span class="title-period">.</span></h2><p>沿着分叉向右探索，按住空白处拖动画布，点击模型名称查看出处。</p></div><div class="timeline-counter"><strong id="visible-count">—</strong><span>个精选节点</span></div></div>
+            <div class="section-heading"><div><h2 id="timeline-title">发展时间线<span class="title-period">.</span></h2><p>沿着分叉向右探索，按住空白处拖动画布，点击模型名称查看详情。</p></div><div class="timeline-counter"><strong id="visible-count">—</strong><span>个精选节点</span></div></div>
             <div class="controls" aria-label="时间线筛选"><div class="filter-group" role="group" aria-label="按公司筛选"><button type="button" class="filter active" data-filter="all" aria-pressed="true">全部 <span id="count-all"></span></button><button type="button" class="filter" data-filter="openai" aria-pressed="false"><i class="filter-dot openai"></i> OpenAI <span id="count-openai"></span></button><button type="button" class="filter" data-filter="deepseek" aria-pressed="false"><i class="filter-dot deepseek"></i> DeepSeek <span id="count-deepseek"></span></button></div><label class="search-box"><span aria-hidden="true">⌕</span><span class="sr-only">搜索模型或关键词</span><input id="search-input" type="search" placeholder="搜索模型 / 关键词" autocomplete="off" /></label></div>
             <div class="timeline-toolbar"><div class="year-rail" aria-label="年份导航"><span>跳至年份</span><div id="year-links"></div></div><div class="scroll-controls"><span>向右探索时间线</span><button type="button" id="scroll-prev" aria-label="向左滚动时间线">←</button><button type="button" id="scroll-next" aria-label="向右滚动时间线">→</button></div></div>
             <div class="tree-legend" aria-label="颜色说明"><span><i class="legend-line openai"></i>OpenAI</span><span><i class="legend-line time"></i>时间</span><span><i class="legend-line deepseek"></i>DeepSeek</span><small>按住拖动 · 触屏滑动</small></div>
@@ -64,7 +64,7 @@
       <footer class="footer"><div class="footer-brand">m<span>·</span> <small>MODEL ATLAS</small></div><p>独立整理的 AI 模型历史导览。所有品牌名称归其各自所有。</p><span>© 2026 模型纪事</span></footer>
     </div>
 
-    <dialog id="detail-dialog" class="detail-dialog" aria-labelledby="dialog-title"><div class="dialog-inner"><button type="button" class="dialog-close" id="dialog-close" aria-label="关闭详情">×</button><div id="dialog-content"></div></div></dialog>
+    <aside id="model-popover" class="model-popover" role="dialog" aria-labelledby="popover-title" hidden><button type="button" class="popover-close" aria-label="关闭模型详情">×</button><div id="popover-content"></div></aside>
     <noscript><div class="noscript">请启用 JavaScript 以浏览模型时间线。</div></noscript>
   </body>
 </html>
