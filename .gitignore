@@ -47,6 +47,13 @@ pnpm-debug.log*
 .roo/
 .qador/
 
+# ===================== 本地预览 / 自测产物 =====================
+# 浏览器自动化自测留下的 profile、截图与探测页面，不进版本库
+.edge-preview-*/
+.shots/
+preview-canvas-*.html
+preview-canvas-*.png
+
 # ===================== IDE 配置 / 构建临时文件 =====================
 .idea/
 vite.config.js.timestamp-*
