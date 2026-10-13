@@ -30,6 +30,28 @@ let companyFilter = 'all';
 
 const companyName = { openai: 'OpenAI', deepseek: 'DeepSeek' };
 const formatDate = (date) => `${Number(date.slice(5, 7))}月${Number(date.slice(8, 10))}日`;
+const columnWidth = 288;
+
+function branchPath(points, end, branchY, bend) {
+  if (!points.length) return '';
+  const first = points[0].x;
+  let path = `M ${Math.max(18, first - 118)} 345 C ${first - 82} 345 ${first - 64} ${branchY} ${first} ${branchY}`;
+  for (let i = 1; i < points.length; i++) {
+    const midpoint = (points[i - 1].x + points[i].x) / 2;
+    path += ` Q ${midpoint} ${branchY + bend} ${points[i].x} ${branchY}`;
+  }
+  return `${path} L ${Math.min(end, points[points.length - 1].x + 112)} ${branchY}`;
+}
+
+function branchDiagram(items) {
+  const width = Math.max(items.length * columnWidth, columnWidth);
+  const points = items.map((item, index) => ({ company: item.company, x: index * columnWidth + columnWidth / 2 }));
+  const openai = points.filter((point) => point.company === 'openai');
+  const deepseek = points.filter((point) => point.company === 'deepseek');
+  const upperNodes = openai.map(({ x }) => `<path d="M ${x} 270 V 246" class="branch-tick openai"/><circle cx="${x}" cy="270" r="7" class="branch-node openai"/>`).join('');
+  const lowerNodes = deepseek.map(({ x }) => `<path d="M ${x} 420 V 444" class="branch-tick deepseek"/><circle cx="${x}" cy="420" r="7" class="branch-node deepseek"/>`).join('');
+  return `<svg class="branch-diagram" viewBox="0 0 ${width} 640" preserveAspectRatio="none" aria-hidden="true"><path d="M 0 345 C ${Math.round(width * .18)} 355 ${Math.round(width * .34)} 351 ${Math.round(width * .5)} 351 S ${Math.round(width * .84)} 346 ${width} 345" class="time-path"/><path d="${branchPath(openai, width, 270, -9)}" class="branch-path openai"/><path d="${branchPath(deepseek, width, 420, 12)}" class="branch-path deepseek"/>${upperNodes}${lowerNodes}</svg>`;
+}
 
 function render() {
   const term = searchInput.value.trim().toLocaleLowerCase();
@@ -47,11 +69,11 @@ function render() {
     return;
   }
 
-  timeline.innerHTML = `<div class="timeline-track">${visible.map((item, position) => {
+  timeline.innerHTML = `<div class="timeline-track">${branchDiagram(visible)}${visible.map((item, position) => {
     const year = item.date.slice(0, 4);
     const firstInYear = position === 0 || visible[position - 1].date.slice(0, 4) !== year;
     const card = `<button type="button" class="milestone-card ${item.company}" data-index="${milestones.indexOf(item)}" aria-label="查看 ${item.name} 详情"><span class="card-top"><span class="company-tag">${companyName[item.company]}</span><span class="card-type">${item.type}</span></span><span class="card-main"><strong>${item.name}</strong><span>${item.summary}</span></span><span class="card-bottom"><span>查看详情</span><span class="card-arrow" aria-hidden="true">↗</span></span></button>`;
-    return `<div class="event-column" ${firstInYear ? `id="year-${year}"` : ''}><div class="column-year">${firstInYear ? `<strong>${year}</strong><span>MODEL ERA</span>` : ''}</div><div class="lane-slot openai">${item.company === 'openai' ? card : '<span class="lane-dash" aria-hidden="true"></span>'}</div><div class="axis-stop"><span class="axis-dot ${item.company}"></span><span class="axis-date">${formatDate(item.date)}</span></div><div class="lane-slot deepseek">${item.company === 'deepseek' ? card : '<span class="lane-dash" aria-hidden="true"></span>'}</div></div>`;
+    return `<div class="event-column" ${firstInYear ? `id="year-${year}"` : ''}><div class="column-year">${firstInYear ? `<strong>${year}</strong><span>MODEL ERA</span>` : ''}</div><div class="lane-slot openai">${item.company === 'openai' ? card : ''}</div><div class="branch-space openai"></div><div class="axis-stop"><span class="axis-date">${formatDate(item.date)}</span></div><div class="branch-space deepseek"></div><div class="lane-slot deepseek">${item.company === 'deepseek' ? card : ''}</div></div>`;
   }).join('')}</div>`;
 }
 
