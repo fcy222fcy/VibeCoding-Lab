@@ -60,3 +60,52 @@
 .timeline-footnote{margin:19px 0 0;font-size:11px}
 @media(max-width:1000px){.timeline-layout{grid-template-columns:145px minmax(0,1fr)}.lane-brand{padding:13px}.lane-brand strong{font-size:22px}.timeline-toolbar{align-items:start}.timeline-toolbar .year-rail{align-items:start;flex-direction:column;gap:8px}}
 @media(max-width:700px){.timeline-layout{grid-template-columns:96px minmax(0,1fr)}.lane-labels,.event-column{grid-template-rows:43px 219px 65px 219px}.event-column{width:250px}.lane-year{font-size:7px;padding:8px}.lane-brand{padding:9px}.lane-brand span{font-size:7px}.lane-brand strong{font-size:16px;margin:8px 0 4px}.lane-brand small{font-size:8px}.lane-axis{font-size:8px;padding-left:8px}.column-year strong{font-size:21px}.column-year span{font-size:7px}.lane-slot{padding:8px}.lane-slot .milestone-card{padding:14px 13px 0}.lane-slot .card-main strong{font-size:20px}.lane-slot .card-main>span{font-size:10px}.axis-stop:before{top:20px}.axis-dot{top:12px}.axis-date{margin-top:39px}.timeline-toolbar{flex-direction:column}.scroll-controls{align-self:flex-end}.scroll-controls>span{display:none}.timeline-toolbar .year-rail{display:flex;flex-direction:row;align-items:center;gap:9px}.timeline-toolbar #year-links button{padding:7px 8px;font-size:10px}}
+
+/* Branch diagram follows the shared red time line in the supplied sketch. */
+.timeline-layout{grid-template-columns:178px minmax(0,1fr);border-color:#e1ded4;background:#fffdf8}
+.lane-labels,.event-column{grid-template-rows:50px 180px 80px 70px 80px 180px}
+.lane-labels{background:#fffdf8;border-right-color:#dedbd1}
+.lane-year,.column-year{background:#f6f2e8;border-bottom-color:#e3dfd3}
+.lane-brand{color:#2e2c24}
+.lane-brand.openai{background:#e8c25d}
+.lane-brand.deepseek{background:#78b475;color:#172a1e}
+.lane-brand strong{font-size:27px}
+.branch-label{display:flex;align-items:center;padding:0 17px;font-size:9px;font-weight:800;letter-spacing:.1em;background:#fffdf8}
+.branch-label.openai{color:#b88d29}
+.branch-label.deepseek{color:#4b9659}
+.lane-axis{background:#de5540;color:#fff;border:0;padding:0 17px;font-size:12px;letter-spacing:.04em;justify-content:space-between}
+.lane-axis span{font-size:18px}
+.timeline-content{background:#fffdf8}
+.timeline-track{position:relative;width:max-content;min-width:0;height:640px}
+.event-column{width:288px;border-right:1px solid #eee9de;position:relative;z-index:2}
+.column-year{border-bottom:1px solid #e3dfd3}
+.lane-slot,.lane-slot.openai,.lane-slot.deepseek{background:transparent;padding:6px 10px;z-index:3}
+.branch-space{background:transparent}
+.axis-stop{background:transparent;border:0;z-index:2}
+.axis-stop:before{display:none}
+.axis-date{margin-top:47px;color:#a64638;font-size:11px}
+.lane-slot .milestone-card{padding:14px 15px 0;box-shadow:none;border:1px solid transparent;border-radius:7px}
+.lane-slot .milestone-card.openai{background:#fff6db;border-color:#e7c777;color:#332b20}
+.lane-slot .milestone-card.deepseek{background:#eaf6e9;border-color:#a8d3a6;color:#233b2a}
+.lane-slot .milestone-card:hover,.lane-slot .milestone-card:focus-visible{box-shadow:0 12px 25px #3b49311a}
+.lane-slot .company-tag{font-size:10px;letter-spacing:.05em}
+.lane-slot .openai .company-tag{color:#9e7421}
+.lane-slot .deepseek .company-tag{color:#3e8d4c}
+.lane-slot .card-type{color:#6e6b5f;border-color:#d8d2be;font-size:9px}
+.lane-slot .card-main{margin-top:12px}
+.lane-slot .card-main strong{font-size:21px}
+.lane-slot .card-main>span{color:#6b716b;font-size:10px;line-height:1.55;margin-top:5px}
+.lane-slot .card-main>span{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.lane-slot .card-bottom{color:#858b7e;border-top-color:#dedccf;padding:7px 0}
+.lane-slot .card-arrow{color:#aa6d37}
+.lane-slot .deepseek .card-arrow{color:#4b9659}
+.branch-diagram{position:absolute;inset:0;width:100%;height:640px;z-index:1;pointer-events:none;overflow:visible}
+.branch-diagram path{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.time-path{stroke:#df5742;stroke-width:5}
+.branch-path.openai,.branch-tick.openai{stroke:#e5bc55;stroke-width:5}
+.branch-path.deepseek,.branch-tick.deepseek{stroke:#69aa6a;stroke-width:5}
+.branch-node{stroke:#fffdf8;stroke-width:3}
+.branch-node.openai{fill:#d6a83f}
+.branch-node.deepseek{fill:#57a760}
+.timeline-content .empty-state{height:640px}
+@media(max-width:700px){.timeline-layout{grid-template-columns:96px minmax(0,1fr)}.lane-labels,.event-column{grid-template-rows:50px 180px 80px 70px 80px 180px}.event-column{width:288px}.lane-brand strong{font-size:16px}.lane-axis{font-size:9px;padding:0 8px}.branch-label{font-size:7px;padding:0 8px}.axis-date{margin-top:47px}}

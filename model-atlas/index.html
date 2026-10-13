@@ -41,7 +41,7 @@
 
         <section class="intro section-wrap" aria-label="探索导览">
           <div class="section-kicker"><span class="tiny-square"></span> THE STORY SO FAR</div>
-          <div class="intro-grid"><h2>一条时间线，<br /><span>两条清晰轨道。</span></h2><p>模型的进步不只是版本号变大。OpenAI 与 DeepSeek 的节点放在同一时间坐标上，以两条独立轨道呈现：向右探索，便能看到两家公司如何先后走向推理与工具使用。</p></div>
+          <div class="intro-grid"><h2>一条主线，<br /><span>两条发展分支。</span></h2><p>红线表示共同的时间，黄色分支记录 OpenAI，绿色分支记录 DeepSeek。每个节点对应一次重要发布；向右探索，便能看到两家公司如何先后走向推理与工具使用。</p></div>
           <div class="story-steps"><div><span>01</span><strong>生成语言</strong><p>从少样本学习到对话式 AI</p></div><div><span>02</span><strong>深入推理</strong><p>给模型更多时间解决复杂问题</p></div><div><span>03</span><strong>调用工具</strong><p>在真实工作流中规划与执行</p></div></div>
         </section>
 
@@ -51,7 +51,7 @@
             <div class="section-heading"><div><h2 id="timeline-title">发展时间线<span class="title-period">.</span></h2><p>从左到右按发布日期排列。横向滑动，点击节点查看官方出处。</p></div><div class="timeline-counter"><strong id="visible-count">—</strong><span>个精选节点</span></div></div>
             <div class="controls" aria-label="时间线筛选"><div class="filter-group" role="group" aria-label="按公司筛选"><button type="button" class="filter active" data-filter="all" aria-pressed="true">全部 <span id="count-all"></span></button><button type="button" class="filter" data-filter="openai" aria-pressed="false"><i class="filter-dot openai"></i> OpenAI <span id="count-openai"></span></button><button type="button" class="filter" data-filter="deepseek" aria-pressed="false"><i class="filter-dot deepseek"></i> DeepSeek <span id="count-deepseek"></span></button></div><label class="search-box"><span aria-hidden="true">⌕</span><span class="sr-only">搜索模型或关键词</span><input id="search-input" type="search" placeholder="搜索模型 / 关键词" autocomplete="off" /></label></div>
             <div class="timeline-toolbar"><div class="year-rail" aria-label="年份导航"><span>跳至年份</span><div id="year-links"></div></div><div class="scroll-controls"><span>向右探索时间线</span><button type="button" id="scroll-prev" aria-label="向左滚动时间线">←</button><button type="button" id="scroll-next" aria-label="向右滚动时间线">→</button></div></div>
-            <div class="timeline-layout"><div class="lane-labels" aria-hidden="true"><div class="lane-year">BRAND / YEAR</div><div class="lane-brand openai"><span>01 / MODEL LINE</span><strong>OpenAI</strong><small>探索 · 推理 · 行动</small></div><div class="lane-axis">TIME →</div><div class="lane-brand deepseek"><span>02 / MODEL LINE</span><strong>DeepSeek</strong><small>开放 · 效率 · 推理</small></div></div><div class="timeline-content" id="timeline-content" tabindex="0" aria-label="横向时间轴，可用左右方向键滚动" aria-live="polite"></div></div>
+            <div class="timeline-layout"><div class="lane-labels" aria-hidden="true"><div class="lane-year">YEAR / BRAND</div><div class="lane-brand openai"><span>UPPER BRANCH</span><strong>OpenAI</strong><small>黄色 · 模型演进</small></div><div class="branch-label openai">OPENAI LINE</div><div class="lane-axis">时间主线 <span>→</span></div><div class="branch-label deepseek">DEEPSEEK LINE</div><div class="lane-brand deepseek"><span>LOWER BRANCH</span><strong>DeepSeek</strong><small>绿色 · 模型演进</small></div></div><div class="timeline-content" id="timeline-content" tabindex="0" aria-label="横向分支时间轴，可用左右方向键滚动" aria-live="polite"></div></div>
             <p class="timeline-footnote">* 精选里程碑，非完整模型目录。日期采用官方公告的发布日期；“发布”不等同于当前仍可使用。资料核对至 2026 年 10 月 13 日。</p>
           </div>
         </section>
