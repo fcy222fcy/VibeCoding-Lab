@@ -1,6 +1,6 @@
 # 模型纪事 / Model Atlas
 
-一个纯前端的 AI 模型发展时间线。第一版整理 OpenAI 与 DeepSeek 的精选发布节点，每条记录都链接到官方来源。
+一个纯前端的 AI 模型发展时间线。OpenAI 与 DeepSeek 分别位于横向时间轴的上下轨道，每条记录都链接到官方来源。资料核对至 2026 年 10 月 13 日，最新收录 GPT-6.1 Sol 与 DeepSeek-V4.1 Flash。
 
 ## 本地预览
 

@@ -13,7 +13,12 @@ const milestones = [
   { date: '2025-08-21', company: 'deepseek', name: 'DeepSeek-V3.1', type: '混合推理', summary: '思考与非思考两种模式并存，强化多步工具任务。', detail: 'DeepSeek 将 V3.1 称为迈向 Agent 时代的第一步：同一模型支持思考与非思考模式，后训练提升工具调用和多步任务能力。', source: 'https://www.deepseek.com/en/news/deepseek-v3-1/', sourceLabel: 'DeepSeek 官方公告' },
   { date: '2025-12-01', company: 'deepseek', name: 'DeepSeek-V3.2', type: '工具使用', summary: '把思考过程进一步融入工具调用。', detail: 'DeepSeek 发布 V3.2，重点介绍「Thinking in Tool-Use」：模型在思考模式与非思考模式中都可以使用工具，使推理与行动更紧密地结合。', source: 'https://api-docs.deepseek.com/news/news251201/', sourceLabel: 'DeepSeek 官方公告' },
   { date: '2025-12-11', company: 'openai', name: 'GPT-5.2', type: '专业工作', summary: '围绕长流程任务、代码与专业知识工作继续演进。', detail: 'OpenAI 将 GPT-5.2 定位为适合专业工作与长流程 Agent 任务的模型，强调其在复杂、多步骤任务中的表现。', source: 'https://openai.com/index/introducing-gpt-5-2/', sourceLabel: 'OpenAI 官方公告' },
-  { date: '2026-03-05', company: 'openai', name: 'GPT-5.4', type: 'Agent 能力', summary: '更聚焦工具、软件环境和专业工作流中的执行能力。', detail: 'OpenAI 发布 GPT-5.4，介绍其在专业知识工作、编码、工具使用与计算机操作方面的提升，并将这些能力用于更复杂的 Agent 工作流。', source: 'https://openai.com/index/introducing-gpt-5-4/', sourceLabel: 'OpenAI 官方公告' }
+  { date: '2026-03-05', company: 'openai', name: 'GPT-5.4', type: 'Agent 能力', summary: '更聚焦工具、软件环境和专业工作流中的执行能力。', detail: 'OpenAI 发布 GPT-5.4，介绍其在专业知识工作、编码、工具使用与计算机操作方面的提升，并将这些能力用于更复杂的 Agent 工作流。', source: 'https://openai.com/index/introducing-gpt-5-4/', sourceLabel: 'OpenAI 官方公告' },
+  { date: '2026-04-24', company: 'deepseek', name: 'DeepSeek-V4 Preview', type: '开放权重', summary: 'V4 系列预览版发布，推出 Pro 与 Flash 两种路线。', detail: 'DeepSeek 发布并开源 V4 预览版，包括面向更强能力的 Pro 和面向效率的 Flash，并引入百万 token 上下文。', source: 'https://www.deepseek.com/news/v4-preview/', sourceLabel: 'DeepSeek 官方公告' },
+  { date: '2026-09-03', company: 'openai', name: 'GPT-6 Astra', type: '前沿模型', summary: 'GPT-6 系列开启，聚焦复杂的端到端任务。', detail: 'OpenAI 发布 GPT-6 Astra，并在官方 API 更新记录中将其定位为面向复杂推理、编码、计算机使用、研究和文档工作的模型。', source: 'https://developers.openai.com/api/docs/changelog', sourceLabel: 'OpenAI API 更新记录' },
+  { date: '2026-09-10', company: 'deepseek', name: 'DeepSeek-V4.1 Flash', type: '高效模型', summary: '以新架构强调速度、成本效率与原生视觉理解。', detail: 'DeepSeek 发布 V4.1 Flash，介绍其不对称架构、原生视觉理解和更高效的推理，作为 V4 系列的后续进展。', source: 'https://www.deepseek.com/en/news/deepseek-v4-1-flash/', sourceLabel: 'DeepSeek 官方公告' },
+  { date: '2026-09-22', company: 'openai', name: 'GPT-6 Sol / Luna', type: '模型家族', summary: 'GPT-6 扩展为兼顾性能与效率的不同选择。', detail: 'OpenAI 发布 GPT-6 Sol 和 GPT-6 Luna。官方 API 更新记录说明两者分别面向不同的性能与成本需求，均可处理文本和图像输入。', source: 'https://developers.openai.com/api/docs/changelog', sourceLabel: 'OpenAI API 更新记录' },
+  { date: '2026-09-29', company: 'openai', name: 'GPT-6.1 Sol', type: '最新节点', summary: 'Sol 系列升级，面向复杂编码、计算机使用和专业工作。', detail: 'OpenAI 于 2026 年 9 月 29 日发布 GPT-6.1 Sol。官方模型资料将其定位为以更低成本接近 Astra 能力的选择，重点覆盖复杂编码、计算机使用与专业任务。', source: 'https://developers.openai.com/api/docs/models/gpt-6.1-sol', sourceLabel: 'OpenAI 官方模型文档' }
 ];
 
 const timeline = document.querySelector('#timeline-content');
@@ -29,33 +34,25 @@ const formatDate = (date) => `${Number(date.slice(5, 7))}月${Number(date.slice(
 function render() {
   const term = searchInput.value.trim().toLocaleLowerCase();
   const visible = milestones.filter((item) => (companyFilter === 'all' || item.company === companyFilter) && `${item.name} ${item.type} ${item.summary} ${item.detail} ${companyName[item.company]}`.toLocaleLowerCase().includes(term));
-  const years = [...new Set(visible.map((item) => item.date.slice(0, 4)))].reverse();
+  const years = [...new Set(visible.map((item) => item.date.slice(0, 4)))];
 
   document.querySelector('#visible-count').textContent = visible.length.toString().padStart(2, '0');
   document.querySelector('#count-all').textContent = milestones.length;
   document.querySelector('#count-openai').textContent = milestones.filter((item) => item.company === 'openai').length;
   document.querySelector('#count-deepseek').textContent = milestones.filter((item) => item.company === 'deepseek').length;
 
-  yearLinks.innerHTML = years.map((year) => `<a href="#year-${year}">${year}<span aria-hidden="true">↗</span></a>`).join('');
+  yearLinks.innerHTML = years.map((year) => `<button type="button" data-year="${year}">${year}</button>`).join('');
   if (!visible.length) {
     timeline.innerHTML = '<div class="empty-state"><strong>没有找到匹配的节点</strong><p>试试其他模型名称或关键词。</p></div>';
     return;
   }
 
-  timeline.innerHTML = years.map((year) => {
-    const cards = visible.filter((item) => item.date.startsWith(year)).reverse().map((item) => {
-      const index = milestones.indexOf(item);
-      return `<article class="milestone ${item.company}">
-        <div class="milestone-date"><span>${formatDate(item.date)}</span><i></i></div>
-        <button type="button" class="milestone-card" data-index="${index}" aria-label="查看 ${item.name} 详情">
-          <span class="card-top"><span class="company-tag"><i></i>${companyName[item.company]}</span><span class="card-type">${item.type}</span></span>
-          <span class="card-main"><strong>${item.name}</strong><span>${item.summary}</span></span>
-          <span class="card-bottom"><span>查看里程碑详情</span><span class="card-arrow" aria-hidden="true">↗</span></span>
-        </button>
-      </article>`;
-    }).join('');
-    return `<div class="year-group" id="year-${year}"><div class="year-heading"><span>${year}</span><small>THE YEAR OF CHANGE</small></div>${cards}</div>`;
-  }).join('');
+  timeline.innerHTML = `<div class="timeline-track">${visible.map((item, position) => {
+    const year = item.date.slice(0, 4);
+    const firstInYear = position === 0 || visible[position - 1].date.slice(0, 4) !== year;
+    const card = `<button type="button" class="milestone-card ${item.company}" data-index="${milestones.indexOf(item)}" aria-label="查看 ${item.name} 详情"><span class="card-top"><span class="company-tag">${companyName[item.company]}</span><span class="card-type">${item.type}</span></span><span class="card-main"><strong>${item.name}</strong><span>${item.summary}</span></span><span class="card-bottom"><span>查看详情</span><span class="card-arrow" aria-hidden="true">↗</span></span></button>`;
+    return `<div class="event-column" ${firstInYear ? `id="year-${year}"` : ''}><div class="column-year">${firstInYear ? `<strong>${year}</strong><span>MODEL ERA</span>` : ''}</div><div class="lane-slot openai">${item.company === 'openai' ? card : '<span class="lane-dash" aria-hidden="true"></span>'}</div><div class="axis-stop"><span class="axis-dot ${item.company}"></span><span class="axis-date">${formatDate(item.date)}</span></div><div class="lane-slot deepseek">${item.company === 'deepseek' ? card : '<span class="lane-dash" aria-hidden="true"></span>'}</div></div>`;
+  }).join('')}</div>`;
 }
 
 document.querySelectorAll('.filter').forEach((button) => {
@@ -71,6 +68,19 @@ document.querySelectorAll('.filter').forEach((button) => {
 });
 
 searchInput.addEventListener('input', render);
+yearLinks.addEventListener('click', (event) => {
+  const button = event.target.closest('[data-year]');
+  if (!button) return;
+  const target = document.querySelector(`#year-${button.dataset.year}`);
+  if (target) timeline.scrollTo({ left: target.offsetLeft - timeline.firstElementChild.offsetLeft, behavior: 'smooth' });
+});
+document.querySelector('#scroll-prev').addEventListener('click', () => timeline.scrollBy({ left: -timeline.clientWidth * .75, behavior: 'smooth' }));
+document.querySelector('#scroll-next').addEventListener('click', () => timeline.scrollBy({ left: timeline.clientWidth * .75, behavior: 'smooth' }));
+timeline.addEventListener('keydown', (event) => {
+  if (event.target !== timeline || !['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+  event.preventDefault();
+  timeline.scrollBy({ left: event.key === 'ArrowRight' ? 260 : -260, behavior: 'smooth' });
+});
 timeline.addEventListener('click', (event) => {
   const card = event.target.closest('[data-index]');
   if (!card) return;
