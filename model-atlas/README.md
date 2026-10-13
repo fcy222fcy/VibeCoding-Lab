@@ -8,7 +8,7 @@
 
 ## 部署到 GitHub Pages
 
-当前项目是 `vibecoding` 仓库的子目录。仓库根目录的 `.github/workflows/deploy.yml` 会在推送 `main` 后将这里的 `index.html`、`styles.css`、`script.js` 和 `favicon.svg` 复制到站点的 `/newproject/` 路径。仓库的 Pages 来源沿用现有的 `gh-pages` 分支，不需要单独配置本目录的工作流，也不需要在网页中放入 GitHub Token。
+当前项目是 `VibeCoding-Lab` 仓库的 `model-atlas` 子目录。仓库根目录的 `.github/workflows/deploy.yml` 会在推送 `main` 后将这里的 `index.html`、`styles.css`、`script.js` 和 `favicon.svg` 复制到站点的 `/model-atlas/` 路径。仓库的 Pages 来源沿用现有的 `gh-pages` 分支，不需要单独配置本目录的工作流，也不需要在网页中放入 GitHub Token。
 
 ## 更新内容
 
