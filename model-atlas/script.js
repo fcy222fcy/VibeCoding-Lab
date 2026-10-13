@@ -18,8 +18,22 @@ const milestones = [
   { date: '2026-09-03', company: 'openai', name: 'GPT-6 Astra', type: '前沿模型', summary: 'GPT-6 系列开启，聚焦复杂的端到端任务。', detail: 'OpenAI 发布 GPT-6 Astra，并在官方 API 更新记录中将其定位为面向复杂推理、编码、计算机使用、研究和文档工作的模型。', source: 'https://developers.openai.com/api/docs/changelog', sourceLabel: 'OpenAI API 更新记录' },
   { date: '2026-09-10', company: 'deepseek', name: 'DeepSeek-V4.1 Flash', type: '高效模型', summary: '以新架构强调速度、成本效率与原生视觉理解。', detail: 'DeepSeek 发布 V4.1 Flash，介绍其不对称架构、原生视觉理解和更高效的推理，作为 V4 系列的后续进展。', source: 'https://www.deepseek.com/en/news/deepseek-v4-1-flash/', sourceLabel: 'DeepSeek 官方公告' },
   { date: '2026-09-22', company: 'openai', name: 'GPT-6 Sol / Luna', type: '模型家族', summary: 'GPT-6 扩展为兼顾性能与效率的不同选择。', detail: 'OpenAI 发布 GPT-6 Sol 和 GPT-6 Luna。官方 API 更新记录说明两者分别面向不同的性能与成本需求，均可处理文本和图像输入。', source: 'https://developers.openai.com/api/docs/changelog', sourceLabel: 'OpenAI API 更新记录' },
-  { date: '2026-09-29', company: 'openai', name: 'GPT-6.1 Sol', type: '最新节点', summary: 'Sol 系列升级，面向复杂编码、计算机使用和专业工作。', detail: 'OpenAI 于 2026 年 9 月 29 日发布 GPT-6.1 Sol。官方模型资料将其定位为以更低成本接近 Astra 能力的选择，重点覆盖复杂编码、计算机使用与专业任务。', source: 'https://developers.openai.com/api/docs/models/gpt-6.1-sol', sourceLabel: 'OpenAI 官方模型文档' }
-];
+  { date: '2026-09-29', company: 'openai', name: 'GPT-6.1 Sol', type: '最新节点', summary: 'Sol 系列升级，面向复杂编码、计算机使用和专业工作。', detail: 'OpenAI 于 2026 年 9 月 29 日发布 GPT-6.1 Sol。官方模型资料将其定位为以更低成本接近 Astra 能力的选择，重点覆盖复杂编码、计算机使用与专业任务。', source: 'https://developers.openai.com/api/docs/models/gpt-6.1-sol', sourceLabel: 'OpenAI 官方模型文档' },
+  { date: '2023-03-14', company: 'claude', name: 'Claude', type: '对话模型', summary: 'Anthropic 正式推出 Claude，对话与文本处理成为其首批公开能力。', detail: 'Claude 基于 Anthropic 对可靠、可控 AI 系统的研究推出。官方介绍其可通过聊天界面和 API 完成总结、搜索、写作、问答及编程等任务。', source: 'https://www.anthropic.com/news/introducing-claude', sourceLabel: 'Anthropic 官方公告' },
+  { date: '2023-07-11', company: 'claude', name: 'Claude 2', type: '长上下文', summary: '更长的输入与输出，面向大篇幅资料理解和写作。', detail: 'Anthropic 发布 Claude 2，并开放 claude.ai 公测。官方介绍其支持最高 100K token 的输入，同时改进了编码、数学和推理表现。', source: 'https://www.anthropic.com/news/claude-2', sourceLabel: 'Anthropic 官方公告' },
+  { date: '2024-03-04', company: 'claude', name: 'Claude 3', type: '模型家族', summary: 'Opus、Sonnet、Haiku 三档模型，兼顾能力、速度与成本。', detail: 'Claude 3 家族同时介绍 Opus、Sonnet 和 Haiku，并加入图像理解能力。不同档位让用户按任务复杂度、响应速度与成本选择模型。', source: 'https://www.anthropic.com/news/claude-3-family', sourceLabel: 'Anthropic 官方公告' },
+  { date: '2024-06-21', company: 'claude', name: 'Claude 3.5 Sonnet', type: '编码能力', summary: 'Sonnet 档位在智能、速度和成本之间取得新的平衡。', detail: 'Anthropic 将 Claude 3.5 Sonnet 作为 3.5 家族的首个版本发布。官方介绍其在推理与编码任务上提升，同时保持中档模型的速度与价格。', source: 'https://www.anthropic.com/news/claude-3-5-sonnet', sourceLabel: 'Anthropic 官方公告' },
+  { date: '2025-02-24', company: 'claude', name: 'Claude 3.7 Sonnet', type: '混合推理', summary: '同一个模型支持快速响应与可见的延长思考。', detail: 'Claude 3.7 Sonnet 引入混合推理模式：用户可获得快速回答，也可让模型进行逐步的延长思考。Anthropic 同日推出 Claude Code 的研究预览。', source: 'https://www.anthropic.com/news/claude-3-7-sonnet', sourceLabel: 'Anthropic 官方公告' },
+  { date: '2025-05-22', company: 'claude', name: 'Claude 4', type: 'Agent 能力', summary: 'Opus 4 与 Sonnet 4 强化编程、推理和长流程任务。', detail: 'Anthropic 发布 Claude Opus 4 与 Claude Sonnet 4，重点介绍持续执行复杂任务的能力，并让延长思考与工具使用结合。', source: 'https://www.anthropic.com/news/claude-4', sourceLabel: 'Anthropic 官方公告' },
+  { date: '2025-09-29', company: 'claude', name: 'Claude Sonnet 4.5', type: '工具使用', summary: '面向编码、计算机操作和复杂 Agent 任务继续提升。', detail: 'Anthropic 发布 Sonnet 4.5，强调其在软件开发、计算机使用和长时间多步骤任务上的进展，并同步扩展 Claude Code 与开发平台能力。', source: 'https://www.anthropic.com/news/claude-sonnet-4-5', sourceLabel: 'Anthropic 官方公告' },
+  { date: '2025-11-24', company: 'claude', name: 'Claude Opus 4.5', type: '前沿模型', summary: '更聚焦复杂编程、Agent 与专业知识工作。', detail: 'Opus 4.5 是 Anthropic 当时推出的高能力模型，官方介绍它在编程、计算机使用，以及研究、文档和表格等工作任务上的提升。', source: 'https://www.anthropic.com/news/claude-opus-4-5', sourceLabel: 'Anthropic 官方公告' },
+  { date: '2026-02-05', company: 'claude', name: 'Claude Opus 4.6', type: '长流程任务', summary: '更擅长大型代码库中的规划、调试和长时间执行。', detail: 'Anthropic 发布 Opus 4.6，介绍其更稳定的长流程 Agent 能力、更强的代码审查与调试表现，以及 Opus 系列首次提供的百万 token 上下文测试版。', source: 'https://www.anthropic.com/news/claude-opus-4-6', sourceLabel: 'Anthropic 官方公告' },
+  { date: '2026-06-30', company: 'claude', name: 'Claude Sonnet 5', type: 'Agent 模型', summary: '以 Sonnet 的速度和成本处理更自主的工具任务。', detail: 'Anthropic 将 Sonnet 5 定位为更具 Agent 能力的 Sonnet 模型，强调它能规划、调用浏览器和终端等工具，并完成多步骤工作。', source: 'https://www.anthropic.com/news/claude-sonnet-5', sourceLabel: 'Anthropic 官方公告' },
+  { date: '2026-09-01', company: 'claude', name: 'Claude Fable 5.1 / Mythos 5.1', type: '前沿研究', summary: '同源模型面向不同访问与安全保障级别。', detail: 'Anthropic 介绍 Fable 5.1 与 Mythos 5.1：两者是同一模型，但使用不同的安全保障。Fable 5.1 面向一般使用，Mythos 5.1 通过受信任访问计划提供。', source: 'https://www.anthropic.com/claude-fable-and-mythos-5-1', sourceLabel: 'Anthropic 官方公告' },
+  { date: '2026-09-22', company: 'claude', name: 'Claude Opus 5.5', type: '复杂任务', summary: 'Claude 5.5 家族的首个版本，面向复杂专业工作。', detail: 'Anthropic 发布 Opus 5.5，称其在多数工作任务上达到 Fable 5.1 的水平，同时比 Opus 5 更经济，适合需要审慎判断的复杂任务。', source: 'https://www.anthropic.com/claude-opus-5-5', sourceLabel: 'Anthropic 官方公告' },
+  { date: '2026-09-28', company: 'claude', name: 'Claude Sonnet 5.5', type: '高效模型', summary: '比 Sonnet 5 更快，适合日常任务、修复缺陷与文档制作。', detail: 'Anthropic 将 Sonnet 5.5 作为 Opus 5.5 的高效搭档推出，强调其速度、成本和编码表现，并覆盖文档、幻灯片与表格制作等工作。', source: 'https://www.anthropic.com/claude-sonnet-5-5', sourceLabel: 'Anthropic 官方公告' },
+  { date: '2026-10-07', company: 'claude', name: 'Claude Haiku 5.5', type: '轻量模型', summary: 'Claude 5.5 家族的快速小模型，面向高频任务。', detail: 'Anthropic 发布 Haiku 5.5，定位为速度快、成本低的小模型，适合总结、分类、数据库查询和实时支持等高频任务，也能作为其他模型的子 Agent。', source: 'https://www.anthropic.com/claude-haiku-5-5', sourceLabel: 'Anthropic 官方公告' }
+].sort((a, b) => a.date.localeCompare(b.date));
 
 const timeline = document.querySelector('#timeline-content');
 const yearLinks = document.querySelector('#year-links');
@@ -29,26 +43,31 @@ const popoverContent = document.querySelector('#popover-content');
 let companyFilter = 'all';
 let activeLabel = null;
 
-const companyName = { openai: 'OpenAI', deepseek: 'DeepSeek' };
+const companyName = { openai: 'OpenAI', claude: 'Claude', deepseek: 'DeepSeek' };
 const formatDate = (date) => `${Number(date.slice(5, 7))}月${Number(date.slice(8, 10))}日`;
 const columnWidth = 240;
 
-function branchPath(points, end, branchY) {
+const axisY = 275;
+const branchY = { openai: 105, claude: 185, deepseek: 365 };
+
+function branchPath(points, end, y) {
   if (!points.length) return '';
   const first = points[0].x;
   const start = Math.max(18, first - 100);
   const finish = Math.min(end, points[points.length - 1].x + 112);
-  return `M ${start} 205 C ${start + 42} 205 ${first - 58} ${branchY} ${first} ${branchY} H ${finish}`;
+  return `M ${start} ${axisY} C ${start + 42} ${axisY} ${first - 58} ${y} ${first} ${y} H ${finish}`;
 }
 
 function branchDiagram(items) {
   const width = Math.max(items.length * columnWidth, columnWidth);
   const points = items.map((item, index) => ({ company: item.company, x: index * columnWidth + columnWidth / 2 }));
-  const openai = points.filter((point) => point.company === 'openai');
-  const deepseek = points.filter((point) => point.company === 'deepseek');
-  const upperNodes = openai.map(({ x }) => `<path d="M ${x} 130 V 112" class="branch-tick openai"/><circle cx="${x}" cy="130" r="6" class="branch-node openai"/>`).join('');
-  const lowerNodes = deepseek.map(({ x }) => `<path d="M ${x} 280 V 298" class="branch-tick deepseek"/><circle cx="${x}" cy="280" r="6" class="branch-node deepseek"/>`).join('');
-  return `<svg class="branch-diagram" viewBox="0 0 ${width} 420" preserveAspectRatio="none" aria-hidden="true"><path d="M 0 205 H ${width}" class="time-path"/><path d="${branchPath(openai, width, 130)}" class="branch-path openai"/><path d="${branchPath(deepseek, width, 280)}" class="branch-path deepseek"/>${upperNodes}${lowerNodes}</svg>`;
+  const branches = Object.entries(branchY).map(([company, y]) => {
+    const nodes = points.filter((point) => point.company === company);
+    const tickEnd = company === 'deepseek' ? y + 18 : y - 18;
+    const ticks = nodes.map(({ x }) => `<path d="M ${x} ${y} V ${tickEnd}" class="branch-tick ${company}"/><circle cx="${x}" cy="${y}" r="6" class="branch-node ${company}"/>`).join('');
+    return `<path d="${branchPath(nodes, width, y)}" class="branch-path ${company}"/>${ticks}`;
+  }).join('');
+  return `<svg class="branch-diagram" viewBox="0 0 ${width} 500" preserveAspectRatio="none" aria-hidden="true"><path d="M 0 ${axisY} H ${width}" class="time-path"/>${branches}</svg>`;
 }
 
 function render() {
@@ -61,6 +80,7 @@ function render() {
   document.querySelector('#count-all').textContent = milestones.length;
   document.querySelector('#count-openai').textContent = milestones.filter((item) => item.company === 'openai').length;
   document.querySelector('#count-deepseek').textContent = milestones.filter((item) => item.company === 'deepseek').length;
+  document.querySelector('#count-claude').textContent = milestones.filter((item) => item.company === 'claude').length;
 
   yearLinks.innerHTML = years.map((year) => `<button type="button" data-year="${year}">${year}</button>`).join('');
   if (!visible.length) {
@@ -72,7 +92,7 @@ function render() {
     const year = item.date.slice(0, 4);
     const firstInYear = position === 0 || visible[position - 1].date.slice(0, 4) !== year;
     const label = `<button type="button" class="model-label ${item.company}" data-index="${milestones.indexOf(item)}" aria-label="查看 ${item.name} 详情" aria-controls="model-popover" aria-expanded="false"><strong>${item.name}</strong><span>${item.type}</span></button>`;
-    return `<div class="event-column" ${firstInYear ? `id="year-${year}"` : ''}><div class="model-slot openai">${item.company === 'openai' ? label : ''}</div><div class="year-mark">${firstInYear ? year : ''}</div><div class="date-mark">${formatDate(item.date)}</div><div class="model-slot deepseek">${item.company === 'deepseek' ? label : ''}</div></div>`;
+    return `<div class="event-column" ${firstInYear ? `id="year-${year}"` : ''}><div class="model-slot openai">${item.company === 'openai' ? label : ''}</div><div class="model-slot claude">${item.company === 'claude' ? label : ''}</div><div class="year-mark">${firstInYear ? year : ''}</div><div class="date-mark">${formatDate(item.date)}</div><div class="model-slot deepseek">${item.company === 'deepseek' ? label : ''}</div></div>`;
   }).join('')}</div>`;
 }
 
