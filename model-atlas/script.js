@@ -36,16 +36,21 @@ const milestones = [
 ].sort((a, b) => a.date.localeCompare(b.date));
 
 const timeline = document.querySelector('#timeline-content');
+const timelineLayout = document.querySelector('#timeline-layout');
 const yearLinks = document.querySelector('#year-links');
 const searchInput = document.querySelector('#search-input');
 const popover = document.querySelector('#model-popover');
 const popoverContent = document.querySelector('#popover-content');
 let companyFilter = 'all';
 let activeLabel = null;
+let zoom = 1;
 
 const companyName = { openai: 'OpenAI', claude: 'Claude', deepseek: 'DeepSeek' };
 const formatDate = (date) => `${Number(date.slice(5, 7))}月${Number(date.slice(8, 10))}日`;
 const columnWidth = 240;
+const trackHeight = 500;
+const minZoom = .6;
+const maxZoom = 2;
 
 const axisY = 275;
 const branchY = { openai: 105, claude: 185, deepseek: 365 };
@@ -88,12 +93,16 @@ function render() {
     return;
   }
 
-  timeline.innerHTML = `<div class="timeline-track">${branchDiagram(visible)}${visible.map((item, position) => {
+  const trackWidth = Math.max(visible.length * columnWidth, columnWidth);
+  timeline.innerHTML = `<div class="timeline-stage" data-base-width="${trackWidth}" style="width:${trackWidth * zoom}px;height:${trackHeight * zoom}px"><div class="timeline-track" style="transform:scale(${zoom})">${branchDiagram(visible)}${visible.map((item, position) => {
     const year = item.date.slice(0, 4);
     const firstInYear = position === 0 || visible[position - 1].date.slice(0, 4) !== year;
     const label = `<button type="button" class="model-label ${item.company}" data-index="${milestones.indexOf(item)}" aria-label="查看 ${item.name} 详情" aria-controls="model-popover" aria-expanded="false"><strong>${item.name}</strong><span>${item.type}</span></button>`;
     return `<div class="event-column" ${firstInYear ? `id="year-${year}"` : ''}><div class="model-slot openai">${item.company === 'openai' ? label : ''}</div><div class="model-slot claude">${item.company === 'claude' ? label : ''}</div><div class="year-mark">${firstInYear ? year : ''}</div><div class="date-mark">${formatDate(item.date)}</div><div class="model-slot deepseek">${item.company === 'deepseek' ? label : ''}</div></div>`;
-  }).join('')}</div>`;
+  }).join('')}</div></div>`;
+  fitCanvasHeight();
+  positionStage();
+  syncViewAnchor();
 }
 
 document.querySelectorAll('.filter').forEach((button) => {
@@ -113,26 +122,156 @@ yearLinks.addEventListener('click', (event) => {
   const button = event.target.closest('[data-year]');
   if (!button) return;
   const target = document.querySelector(`#year-${button.dataset.year}`);
-  if (target) timeline.scrollTo({ left: target.offsetLeft - timeline.firstElementChild.offsetLeft, behavior: 'smooth' });
+  if (target) timeline.scrollTo({ left: target.offsetLeft * zoom, behavior: 'smooth' });
 });
 document.querySelector('#scroll-prev').addEventListener('click', () => timeline.scrollBy({ left: -timeline.clientWidth * .75, behavior: 'smooth' }));
 document.querySelector('#scroll-next').addEventListener('click', () => timeline.scrollBy({ left: timeline.clientWidth * .75, behavior: 'smooth' }));
 timeline.addEventListener('keydown', (event) => {
-  if (event.target !== timeline || !['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+  if (event.target !== timeline) return;
+  if (['+', '='].includes(event.key)) { event.preventDefault(); setZoom(zoom + .2); return; }
+  if (event.key === '-') { event.preventDefault(); setZoom(zoom - .2); return; }
+  if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) return;
   event.preventDefault();
-  timeline.scrollBy({ left: event.key === 'ArrowRight' ? 260 : -260, behavior: 'smooth' });
+  const movement = { ArrowLeft: [-260, 0], ArrowRight: [260, 0], ArrowUp: [0, -160], ArrowDown: [0, 160] }[event.key];
+  timeline.scrollBy({ left: movement[0], top: movement[1], behavior: 'smooth' });
+});
+
+function canvasCenter() {
+  const stage = timeline.querySelector('.timeline-stage');
+  const left = stage ? parseFloat(stage.style.marginLeft) || 0 : 0;
+  const top = stage ? parseFloat(stage.style.marginTop) || 0 : 0;
+  return { x: (timeline.scrollLeft + timeline.clientWidth / 2 - left) / zoom, y: (timeline.scrollTop + timeline.clientHeight / 2 - top) / zoom };
+}
+
+function restoreCanvasCenter(center) {
+  const stage = timeline.querySelector('.timeline-stage');
+  const left = stage ? parseFloat(stage.style.marginLeft) || 0 : 0;
+  const top = stage ? parseFloat(stage.style.marginTop) || 0 : 0;
+  timeline.scrollLeft = center.x * zoom + left - timeline.clientWidth / 2;
+  timeline.scrollTop = center.y * zoom + top - timeline.clientHeight / 2;
+}
+
+function positionStage() {
+  const stage = timeline.querySelector('.timeline-stage');
+  if (!stage) return;
+  stage.style.marginLeft = `${Math.max(0, (timeline.clientWidth - stage.offsetWidth) / 2)}px`;
+  stage.style.marginTop = `${Math.max(0, (timeline.clientHeight - stage.offsetHeight) / 2)}px`;
+}
+
+// 横向滚动条会占掉容器高度，若不同步补偿，100% 缩放时会被挤出一条多余的纵向滚动条。
+function fitCanvasHeight() {
+  const scrollbar = timeline.offsetHeight - timeline.clientHeight;
+  if (scrollbar > 0) timeline.style.setProperty('--canvas-height', `${trackHeight + scrollbar}px`);
+}
+
+// 视野锚点：用轨道坐标记住"用户正在看哪里"，进入/退出全屏后复原，避免视角跳动。
+let viewAnchor = null;
+
+function syncViewAnchor() {
+  if (!timeline.querySelector('.timeline-stage')) return;
+  viewAnchor = canvasCenter();
+}
+
+function keepViewAnchor() {
+  positionStage();
+  if (viewAnchor) restoreCanvasCenter(viewAnchor);
+}
+
+function updateZoomControls() {
+  document.querySelector('#zoom-reset').textContent = `${Math.round(zoom * 100)}%`;
+  document.querySelector('#zoom-out').disabled = zoom <= minZoom;
+  document.querySelector('#zoom-in').disabled = zoom >= maxZoom;
+}
+
+function setZoom(value) {
+  const nextZoom = Math.min(maxZoom, Math.max(minZoom, Math.round(value * 10) / 10));
+  if (nextZoom === zoom) return;
+  const center = canvasCenter();
+  zoom = nextZoom;
+  closePopover();
+  const stage = timeline.querySelector('.timeline-stage');
+  if (stage) {
+    stage.style.width = `${Number(stage.dataset.baseWidth) * zoom}px`;
+    stage.style.height = `${trackHeight * zoom}px`;
+    stage.firstElementChild.style.transform = `scale(${zoom})`;
+    positionStage();
+    restoreCanvasCenter(center);
+    viewAnchor = center;
+  }
+  updateZoomControls();
+}
+
+document.querySelector('#zoom-out').addEventListener('click', () => setZoom(zoom - .2));
+document.querySelector('#zoom-in').addEventListener('click', () => setZoom(zoom + .2));
+document.querySelector('#zoom-reset').addEventListener('click', () => setZoom(1));
+updateZoomControls();
+
+const fullscreenToggle = document.querySelector('#fullscreen-toggle');
+function isCanvasFullscreen() {
+  return document.fullscreenElement === timelineLayout || timelineLayout.classList.contains('is-fullscreen');
+}
+// 原生全屏走浏览器 top layer，只有全屏元素及其后代会被绘制；兜底全屏靠 z-index:50 也会盖住挂在 body 下的弹层。
+// 两种情况详情卡片都看不见，所以全屏期间把弹层挪进画布，退出时再挪回 body。
+// 画布及其祖先没有 transform / filter / will-change，position:fixed 的坐标基准不受影响。
+function relocatePopover() {
+  const host = isCanvasFullscreen() ? timelineLayout : document.body;
+  if (popover.parentElement !== host) host.appendChild(popover);
+}
+function updateFullscreenButton() {
+  const expanded = isCanvasFullscreen();
+  // 展开后只换图标容易让人找不到"怎么退出去"，所以退出态直接给文字按钮。
+  fullscreenToggle.textContent = expanded ? '退出全屏' : '⛶';
+  fullscreenToggle.classList.toggle('is-exit', expanded);
+  fullscreenToggle.setAttribute('aria-label', expanded ? '退出全屏时间轴' : '全屏查看时间轴');
+  fullscreenToggle.setAttribute('aria-pressed', String(expanded));
+  fullscreenToggle.title = expanded ? '退出全屏' : '全屏查看';
+}
+fullscreenToggle.addEventListener('click', async () => {
+  viewAnchor = canvasCenter();
+  closePopover();
+  if (timelineLayout.classList.contains('is-fullscreen')) {
+    timelineLayout.classList.remove('is-fullscreen');
+    document.body.classList.remove('timeline-expanded');
+  } else if (document.fullscreenElement === timelineLayout) {
+    await document.exitFullscreen();
+  } else if (timelineLayout.requestFullscreen) {
+    try {
+      await timelineLayout.requestFullscreen();
+    } catch {
+      timelineLayout.classList.add('is-fullscreen');
+      document.body.classList.add('timeline-expanded');
+    }
+  } else {
+    timelineLayout.classList.add('is-fullscreen');
+    document.body.classList.add('timeline-expanded');
+  }
+  keepViewAnchor();
+  relocatePopover();
+  updateFullscreenButton();
+});
+// 用 Esc 或浏览器自带按钮退出全屏时不会走上面的分支，同样需要把视角锚回去。
+document.addEventListener('fullscreenchange', () => { keepViewAnchor(); relocatePopover(); updateFullscreenButton(); });
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && timelineLayout.classList.contains('is-fullscreen')) {
+    timelineLayout.classList.remove('is-fullscreen');
+    document.body.classList.remove('timeline-expanded');
+    keepViewAnchor();
+    relocatePopover();
+    updateFullscreenButton();
+  }
 });
 
 let dragState = null;
 let ignoreClickUntil = 0;
 timeline.addEventListener('pointerdown', (event) => {
   if (event.pointerType === 'touch' || event.button !== 0) return;
-  dragState = { pointerId: event.pointerId, startX: event.clientX, scrollLeft: timeline.scrollLeft, moved: false };
+  dragState = { pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, scrollLeft: timeline.scrollLeft, scrollTop: timeline.scrollTop, moved: false };
 });
 timeline.addEventListener('pointermove', (event) => {
   if (!dragState || event.pointerId !== dragState.pointerId) return;
   const distance = event.clientX - dragState.startX;
-  if (!dragState.moved && Math.abs(distance) < 5) return;
+  const verticalDistance = event.clientY - dragState.startY;
+  if (!dragState.moved && Math.hypot(distance, verticalDistance) < 5) return;
   if (!dragState.moved) {
     dragState.moved = true;
     closePopover();
@@ -141,6 +280,7 @@ timeline.addEventListener('pointermove', (event) => {
   }
   event.preventDefault();
   timeline.scrollLeft = dragState.scrollLeft - distance;
+  timeline.scrollTop = dragState.scrollTop - verticalDistance;
 });
 timeline.addEventListener('pointerleave', () => {
   if (dragState && !dragState.moved) dragState = null;
@@ -205,8 +345,8 @@ document.addEventListener('click', (event) => {
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape' && !popover.hidden) closePopover(true);
 });
-timeline.addEventListener('scroll', () => closePopover());
+timeline.addEventListener('scroll', () => { closePopover(); syncViewAnchor(); });
 window.addEventListener('scroll', () => closePopover(), { passive: true });
-window.addEventListener('resize', positionPopover);
+window.addEventListener('resize', () => { keepViewAnchor(); positionPopover(); });
 
 render();

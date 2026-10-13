@@ -4,17 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#10131b" />
-    <meta name="description" content="沿着时间线，探索 OpenAI、Claude 与 DeepSeek 的模型演进。每个里程碑都附有官方资料来源。" />
-    <title>模型纪事 · OpenAI × Claude × DeepSeek</title>
+    <meta name="description" content="AI 演进图谱：从模型开始，探索人工智能的发展。首篇收录 OpenAI、Claude 与 DeepSeek 的代表性节点。" />
+    <title>AI 演进图谱 · 模型篇</title>
     <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="./styles.css?v=tree-1" />
-    <link rel="stylesheet" href="./tree.css?v=claude-1" />
-    <script src="./script.js?v=claude-1" defer></script>
+    <link rel="stylesheet" href="./tree.css?v=canvas-5" />
+    <script src="./script.js?v=canvas-5" defer></script>
   </head>
   <body>
     <div class="site-shell">
       <header class="topbar" id="top">
-        <a class="brand" href="#top" aria-label="模型纪事，返回顶部"><span class="brand-mark">m<span>·</span></span><span>模型纪事<span class="brand-en">MODEL ATLAS</span></span></a>
+        <a class="brand" href="#top" aria-label="AI 演进图谱，返回顶部"><span class="brand-mark">AI<span>·</span></span><span>AI 演进图谱<span class="brand-en">AI EVOLUTION ATLAS</span></span></a>
         <nav class="top-nav" aria-label="主导航"><a href="#timeline">发展时间线</a><a href="#about">关于这个项目</a></nav>
         <a class="nav-cta" href="#timeline">开始探索 <span aria-hidden="true">↗</span></a>
       </header>
@@ -23,9 +23,9 @@
         <section class="hero" aria-labelledby="hero-title">
           <div class="hero-glow"></div>
           <div class="hero-copy">
-            <div class="eyebrow"><span class="signal-dot"></span> AN INTERACTIVE HISTORY OF AI MODELS <span class="eyebrow-line"></span> VOL. 01</div>
-            <h1 id="hero-title">模型如何<br /><em>走到今天<span class="period">.</span></em></h1>
-            <p class="hero-description">从语言生成到深度推理，再到能够使用工具的模型。沿着 OpenAI、Claude 与 DeepSeek 的关键节点，看见 AI 能力演进的脉络。</p>
+            <div class="eyebrow"><span class="signal-dot"></span> AN INTERACTIVE HISTORY OF AI <span class="eyebrow-line"></span> CHAPTER 01 / MODELS</div>
+            <h1 id="hero-title">AI 如何<br /><em>走到今天<span class="period">.</span></em></h1>
+            <p class="hero-description">从模型开始，逐步记录人工智能的技术与产品演进。这一篇沿着 OpenAI、Claude 与 DeepSeek 的关键发布，观察能力如何从生成走向推理与行动。</p>
             <div class="hero-actions"><a class="primary-button" href="#timeline">探索时间线 <span aria-hidden="true">↗</span></a><span class="hero-note">最新收录 · GPT-6.1 Sol / Claude Haiku 5.5 / DeepSeek-V4.1 Flash</span></div>
           </div>
           <div class="hero-art" aria-hidden="true">
@@ -42,26 +42,26 @@
 
         <section class="intro section-wrap" aria-label="探索导览">
           <div class="section-kicker"><span class="tiny-square"></span> THE STORY SO FAR</div>
-          <div class="intro-grid"><h2>一条主线，<br /><span>三条发展分支。</span></h2><p>红线表示共同的时间，黄色、紫色和绿色分支分别记录 OpenAI、Claude 与 DeepSeek。向右探索，可以看到三家公司如何先后走向推理与工具使用。</p></div>
+          <div class="intro-grid"><h2>从模型开始，<br /><span>追踪 AI 演进。</span></h2><p>模型篇用红线表示共同时间，黄色、紫色和绿色分支分别记录 OpenAI、Claude 与 DeepSeek。后续章节可以继续加入 Agent、工具和产品形态的发展。</p></div>
           <div class="story-steps"><div><span>01</span><strong>生成语言</strong><p>从少样本学习到对话式 AI</p></div><div><span>02</span><strong>深入推理</strong><p>给模型更多时间解决复杂问题</p></div><div><span>03</span><strong>调用工具</strong><p>在真实工作流中规划与执行</p></div></div>
         </section>
 
         <section class="timeline-section" id="timeline" aria-labelledby="timeline-title">
           <div class="section-wrap">
-            <div class="section-kicker"><span class="tiny-square"></span> EXPLORE THE TIMELINE / 01</div>
-            <div class="section-heading"><div><h2 id="timeline-title">发展时间线<span class="title-period">.</span></h2><p>沿着分叉向右探索，按住空白处拖动画布，点击模型名称查看详情。</p></div><div class="timeline-counter"><strong id="visible-count">—</strong><span>个精选节点</span></div></div>
+            <div class="section-kicker"><span class="tiny-square"></span> CHAPTER 01 / MODEL EVOLUTION</div>
+            <div class="section-heading"><div><h2 id="timeline-title">模型发展时间线<span class="title-period">.</span></h2><p>拖动画布探索节点，使用右上角控件缩放或全屏，点击模型名称查看详情。</p></div><div class="timeline-counter"><strong id="visible-count">—</strong><span>个精选节点</span></div></div>
             <div class="controls" aria-label="时间线筛选"><div class="filter-group" role="group" aria-label="按公司筛选"><button type="button" class="filter active" data-filter="all" aria-pressed="true">全部 <span id="count-all"></span></button><button type="button" class="filter" data-filter="openai" aria-pressed="false"><i class="filter-dot openai"></i> OpenAI <span id="count-openai"></span></button><button type="button" class="filter" data-filter="claude" aria-pressed="false"><i class="filter-dot claude"></i> Claude <span id="count-claude"></span></button><button type="button" class="filter" data-filter="deepseek" aria-pressed="false"><i class="filter-dot deepseek"></i> DeepSeek <span id="count-deepseek"></span></button></div><label class="search-box"><span aria-hidden="true">⌕</span><span class="sr-only">搜索模型或关键词</span><input id="search-input" type="search" placeholder="搜索模型 / 关键词" autocomplete="off" /></label></div>
             <div class="timeline-toolbar"><div class="year-rail" aria-label="年份导航"><span>跳至年份</span><div id="year-links"></div></div><div class="scroll-controls"><span>向右探索时间线</span><button type="button" id="scroll-prev" aria-label="向左滚动时间线">←</button><button type="button" id="scroll-next" aria-label="向右滚动时间线">→</button></div></div>
             <div class="tree-legend" aria-label="颜色说明"><span><i class="legend-line openai"></i>OpenAI</span><span><i class="legend-line claude"></i>Claude</span><span><i class="legend-line time"></i>时间</span><span><i class="legend-line deepseek"></i>DeepSeek</span><small>按住拖动 · 触屏滑动</small></div>
-            <div class="timeline-layout"><div class="timeline-content" id="timeline-content" tabindex="0" aria-label="可拖动的横向树状时间轴；也可使用左右方向键或上方年份按钮" aria-live="polite"></div></div>
+            <div class="timeline-layout" id="timeline-layout"><div class="timeline-content" id="timeline-content" tabindex="0" aria-label="可拖动、可缩放的模型发展时间轴；也可使用方向键或上方年份按钮" aria-live="polite"></div><div class="canvas-controls" role="group" aria-label="画布视图控制"><button type="button" id="zoom-out" aria-label="缩小时间轴" title="缩小">−</button><button type="button" id="zoom-reset" aria-label="恢复原始缩放" title="恢复 100%">100%</button><button type="button" id="zoom-in" aria-label="放大时间轴" title="放大">+</button><span class="canvas-controls-divider" aria-hidden="true"></span><button type="button" id="fullscreen-toggle" aria-label="全屏查看时间轴" aria-pressed="false" title="全屏查看">⛶</button></div><div class="fullscreen-legend" aria-hidden="true"><span><i class="legend-line openai"></i>OpenAI</span><span><i class="legend-line claude"></i>Claude</span><span><i class="legend-line time"></i>时间</span><span><i class="legend-line deepseek"></i>DeepSeek</span></div></div>
             <p class="timeline-footnote">* 精选里程碑，非完整模型目录。日期采用官方公告的发布日期；“发布”不等同于当前仍可使用。资料核对至 2026 年 10 月 13 日。</p>
           </div>
         </section>
 
-        <section class="outro section-wrap" id="about"><div class="outro-index">NEXT CHAPTER / 02</div><div><h2>故事还在继续<span>.</span></h2><p>当前收录 OpenAI、Claude 与 DeepSeek 的代表性模型发布。后续可以沿着这条时间线继续加入 Agent、工具调用和产品形态的演进。</p><a href="#top">回到顶部 <span aria-hidden="true">↑</span></a></div></section>
+        <section class="outro section-wrap" id="about"><div class="outro-index">NEXT CHAPTER / 02</div><div><h2>故事还在继续<span>.</span></h2><p>模型只是 AI 发展的一部分。这里先收录三家公司的代表性模型，今后还会继续梳理 Agent、工具调用和产品形态的演进。</p><a href="#top">回到顶部 <span aria-hidden="true">↑</span></a></div></section>
       </main>
 
-      <footer class="footer"><div class="footer-brand">m<span>·</span> <small>MODEL ATLAS</small></div><p>独立整理的 AI 模型历史导览。所有品牌名称归其各自所有。</p><span>© 2026 模型纪事</span></footer>
+      <footer class="footer"><div class="footer-brand">AI<span>·</span> <small>EVOLUTION ATLAS</small></div><p>独立整理的 AI 发展导览。所有品牌名称归其各自所有。</p><span>© 2026 AI 演进图谱</span></footer>
     </div>
 
     <aside id="model-popover" class="model-popover" role="dialog" aria-labelledby="popover-title" hidden><button type="button" class="popover-close" aria-label="关闭模型详情">×</button><div id="popover-content"></div></aside>
