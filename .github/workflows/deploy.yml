@@ -52,6 +52,8 @@ jobs:
           cp -r XINGLUGU site/XINGLUGU
           # 清理构建残留的调试产物（.gitignore 已覆盖大部分）
           rm -rf site/XINGLUGU/dist
+          mkdir -p site/newproject
+          cp newproject/index.html newproject/styles.css newproject/script.js newproject/favicon.svg site/newproject/
 
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4
